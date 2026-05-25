@@ -1,9 +1,21 @@
 import { create } from 'zustand';
 
 export const useRaceStore = create((set, get) => ({
+  arenaMode: 'sorting',
   array: [],
   arraySize: 50,
+  arrayType: 'random',
   speed: 50,
+  debugMode: false,
+  stepTrigger: 0,
+  customCode: `function* customSort(array) {
+  let arr = [...array];
+  let comparisons = 0, swaps = 0;
+  // Write your logic here! 
+  // yield { arr: [...arr], active: [], comparisons, swaps, sorted: false, line: 0 };
+  
+  yield { arr: [...arr], active: [], comparisons, swaps, sorted: true, line: null };
+}`,
   algorithms: [],
   raceStatus: 'idle', // idle, running, paused, finished
   
@@ -18,6 +30,11 @@ export const useRaceStore = create((set, get) => ({
 
   setArraySize: (size) => set({ arraySize: size }),
   setSpeed: (speed) => set({ speed }),
+  setArenaMode: (mode) => set({ arenaMode: mode }),
+  setArrayType: (type) => set({ arrayType: type }),
+  setDebugMode: (mode) => set({ debugMode: mode }),
+  triggerNextStep: () => set((state) => ({ stepTrigger: state.stepTrigger + 1 })),
+  setCustomCode: (code) => set({ customCode: code }),
   setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
   setGeometryMode: (mode) => set({ geometryMode: mode }),
   setTimelineIndex: (index) => set({ timelineIndex: index }),

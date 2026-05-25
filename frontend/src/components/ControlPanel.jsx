@@ -7,10 +7,11 @@ const ControlPanel = () => {
     arraySize, setArraySize, 
     speed, setSpeed, 
     algorithms, toggleAlgorithm, 
-    setArray, raceStatus, startRace, pauseRace, resumeRace,
+    setArray, setArrayType, raceStatus, startRace, pauseRace, resumeRace,
     soundEnabled, setSoundEnabled,
     geometryMode, setGeometryMode,
-    timelineIndex, setTimelineIndex, maxTimelineLength
+    timelineIndex, setTimelineIndex, maxTimelineLength,
+    debugMode, setDebugMode, triggerNextStep
   } = useRaceStore();
 
   const availableAlgos = ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Quick Sort'];
@@ -24,6 +25,7 @@ const ControlPanel = () => {
     } else if (type === 'reverse') {
       newArr = Array.from({ length: arraySize }, (_, i) => Math.floor(((arraySize-i)/arraySize)*100) + 5);
     }
+    setArrayType(type);
     setArray(newArr);
   };
 
@@ -61,7 +63,8 @@ const ControlPanel = () => {
             <input 
               type="range" min="10" max="1000" value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
-              className="w-full accent-[#9d00ff] bg-gray-800 rounded-lg appearance-none h-1"
+              disabled={debugMode}
+              className={`w-full accent-[#9d00ff] rounded-lg appearance-none h-1 ${debugMode ? 'bg-gray-900 opacity-50' : 'bg-gray-800'}`}
             />
           </div>
         </div>
@@ -110,9 +113,16 @@ const ControlPanel = () => {
               <h3 className="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Audio Feedback</h3>
               <button 
                 onClick={() => setSoundEnabled(!soundEnabled)}
-                className={`w-full py-1 rounded text-xs flex items-center justify-center gap-2 ${soundEnabled ? 'bg-[#00f3ff]/20 text-[#00f3ff] border border-[#00f3ff]' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}
+                className={`w-full py-1 rounded text-xs flex items-center justify-center gap-2 mb-2 ${soundEnabled ? 'bg-[#00f3ff]/20 text-[#00f3ff] border border-[#00f3ff]' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}
               >
                 {soundEnabled ? '🔊 Sound ON' : '🔈 Sound OFF'}
+              </button>
+              <button 
+                onClick={() => setDebugMode(!debugMode)}
+                disabled={raceStatus !== 'idle'}
+                className={`w-full py-1 rounded text-xs flex items-center justify-center gap-2 ${debugMode ? 'bg-red-500/20 text-red-500 border border-red-500' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}
+              >
+                {debugMode ? '🐞 Debug ON' : '🐞 Debug OFF'}
               </button>
             </div>
           </div>
@@ -139,13 +149,24 @@ const ControlPanel = () => {
           )}
 
           {raceStatus === 'running' && (
-            <motion.button 
-              whileHover={{ scale: 1.02 }}
-              onClick={pauseRace}
-              className="w-full py-2.5 rounded-lg bg-yellow-500/20 border border-yellow-500 text-yellow-500 font-black tracking-widest uppercase shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-            >
-              Pause Race
-            </motion.button>
+            <div className="flex gap-2">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                onClick={pauseRace}
+                className="flex-1 py-2.5 rounded-lg bg-yellow-500/20 border border-yellow-500 text-yellow-500 font-black tracking-widest uppercase shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+              >
+                Pause Race
+              </motion.button>
+              {debugMode && (
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  onClick={triggerNextStep}
+                  className="flex-1 py-2.5 rounded-lg bg-red-500/20 border border-red-500 text-red-500 font-black tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                >
+                  Step ▶
+                </motion.button>
+              )}
+            </div>
           )}
 
           {raceStatus === 'paused' && (

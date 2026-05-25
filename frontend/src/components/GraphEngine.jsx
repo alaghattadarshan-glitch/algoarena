@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { useRaceStore } from '../store/useRaceStore';
-import AlgoWorker from '../workers/algoWorker?worker';
-import { playTone, playFinishSound } from '../utils/audio';
+import { useGraphStore } from '../store/useGraphStore';
+import GraphWorker from '../workers/graphWorker?worker';
+import { playFinishSound } from '../utils/audio';
 
-const RaceEngine = () => {
-  const { array, algorithms, raceStatus, updateMetric, speed, setWinner, finishRace, soundEnabled, debugMode, stepTrigger } = useRaceStore();
+const GraphEngine = () => {
+  const { grid, algorithms, raceStatus, updateMetric, speed, setWinner, finishRace, startNode, endNode, walls } = useGraphStore();
   const workersRef = useRef({});
   const intervalRef = useRef(null);
   const finishedStateRef = useRef({});
@@ -13,36 +13,41 @@ const RaceEngine = () => {
     if (raceStatus === 'running') {
       
       if (Object.keys(workersRef.current).length === 0) {
+        // Convert walls Set to Array to pass to worker
+        const wallsArray = Array.from(walls);
+        const rows = grid.length;
+        const cols = grid[0].length;
+        
         algorithms.forEach(algo => {
-          const worker = new AlgoWorker();
-          worker.postMessage({ type: 'INIT', payload: { algorithm: algo, array, customCode: useRaceStore.getState().customCode } });
+          const worker = new GraphWorker();
+          worker.postMessage({ 
+            type: 'INIT', 
+            payload: { algorithm: algo, rows, cols, startNode, endNode, wallsArray } 
+          });
           
           worker.onmessage = (e) => {
             const { type, payload } = e.data;
             if (type === 'STEP') {
               const { algorithm, value, done, timeTaken } = payload;
               
-              if (done || value.sorted) {
+              if (done || value.finished) {
                  finishedStateRef.current[algorithm] = true;
                  updateMetric(algorithm, { ...value, finished: true, time: timeTaken });
                  
-                 if (!useRaceStore.getState().winner) {
+                 if (!useGraphStore.getState().winner) {
                    setWinner(algorithm);
                  }
                  
                  if (Object.keys(finishedStateRef.current).length === algorithms.length) {
                    clearInterval(intervalRef.current);
                    finishRace();
-                   playFinishSound(soundEnabled);
+                   playFinishSound(true); // Always play finish sound for graph
                    
                    Object.values(workersRef.current).forEach(w => w.terminate());
                    workersRef.current = {};
                  }
               } else {
                  updateMetric(algorithm, value);
-                 if (value.swappedValue !== undefined) {
-                   playTone(value.swappedValue, 105, soundEnabled);
-                 }
               }
             }
           };
@@ -52,16 +57,12 @@ const RaceEngine = () => {
         finishedStateRef.current = {};
       }
 
-      if (!debugMode) {
-        intervalRef.current = setInterval(() => {
-          Object.values(workersRef.current).forEach(worker => {
-             worker.postMessage({ type: 'TICK' });
-          });
-        }, 1000 / speed);
-      }
+      intervalRef.current = setInterval(() => {
+        Object.values(workersRef.current).forEach(worker => {
+           worker.postMessage({ type: 'TICK' });
+        });
+      }, 1000 / speed);
 
-    } else if (raceStatus === 'paused') {
-      clearInterval(intervalRef.current);
     } else if (raceStatus === 'idle') {
       clearInterval(intervalRef.current);
       Object.values(workersRef.current).forEach(worker => worker.terminate());
@@ -72,18 +73,8 @@ const RaceEngine = () => {
     return () => {
        clearInterval(intervalRef.current);
     };
-  }, [raceStatus, speed, algorithms, array, soundEnabled, debugMode]);
+  }, [raceStatus, speed, algorithms, grid, startNode, endNode, walls]);
 
-  // Handle manual steps in debug mode
-  useEffect(() => {
-    if (debugMode && raceStatus === 'running' && stepTrigger > 0) {
-      Object.values(workersRef.current).forEach(worker => {
-         worker.postMessage({ type: 'TICK' });
-      });
-    }
-  }, [stepTrigger, debugMode, raceStatus]);
-
-  // Cleanup workers on unmount
   useEffect(() => {
     return () => {
       Object.values(workersRef.current).forEach(worker => worker.terminate());
@@ -93,4 +84,4 @@ const RaceEngine = () => {
   return null;
 };
 
-export default RaceEngine;
+export default GraphEngine;

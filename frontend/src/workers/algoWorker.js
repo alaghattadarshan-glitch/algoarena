@@ -9,7 +9,17 @@ self.onmessage = (e) => {
   
   if (type === 'INIT') {
     algorithmName = payload.algorithm;
-    generator = algorithmsMap[algorithmName].generator(payload.array);
+    if (algorithmName === 'Custom Sort') {
+      try {
+        const fn = new Function('return ' + payload.customCode)();
+        generator = fn(payload.array);
+      } catch (e) {
+        self.postMessage({ type: 'ERROR', payload: e.message });
+        return;
+      }
+    } else {
+      generator = algorithmsMap[algorithmName].generator(payload.array);
+    }
     startTime = performance.now();
     self.postMessage({ type: 'INIT_DONE' });
   } 
