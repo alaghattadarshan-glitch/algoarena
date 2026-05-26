@@ -2,7 +2,6 @@ import React from 'react';
 import Hero from './components/Hero';
 import ControlPanel from './components/ControlPanel';
 import SortingVisualizer from './visualizers/SortingVisualizer';
-import CustomIDE from './components/CustomIDE';
 import ComparisonCharts from './components/ComparisonCharts';
 import RaceEngine from './components/RaceEngine';
 import AIAnalyst from './components/AIAnalyst';
@@ -53,7 +52,6 @@ function App() {
         {arenaMode === 'sorting' && (
           <>
             <Hero />
-            <CustomIDE />
             <ControlPanel />
             <AIAnalyst />
 

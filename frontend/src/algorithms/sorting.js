@@ -321,10 +321,5 @@ export const algorithmsMap = {
     generator: bogoSort, 
     code: bogoSortCode,
     complexity: { best: 'O(n)', avg: 'O(n * n!)', worst: 'O(∞)', space: 'O(1)', curve: 'quadratic', tooltip: 'Meme algorithm. Randomly shuffles the array over and over until it happens to be sorted.' }
-  },
-  'Custom Sort': {
-    generator: null,
-    code: ["// Player defined logic", "// Check Custom IDE"],
-    complexity: { best: '?', avg: '?', worst: '?', space: '?', curve: 'linear', tooltip: 'Custom player-defined logic. Complexity depends entirely on your code!' }
   }
 };
