@@ -102,7 +102,12 @@ const DPArena = () => {
   };
 
   const dpInfo = (
-    <>
+    <div className="flex flex-col gap-6">
+      <div className="w-full rounded-2xl overflow-hidden border border-[#ffae00]/30 shadow-[0_0_30px_rgba(255,174,0,0.15)] relative">
+        <img src="/algoarena/img/dp_flowchart.png" alt="Dynamic Programming Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+      </div>
+
       <div className="bg-black/40 border border-[#ffae00]/20 p-5 rounded-xl">
         <h3 className="text-[#ffae00] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Memoization Mechanics</h3>
         <p className="mb-3 text-gray-300">
@@ -133,7 +138,7 @@ const DPArena = () => {
           <li><strong>Financial Trading:</strong> Portfolio optimization and maximizing return-on-investment within specific budget constraints uses exactly the same math as the 0/1 Knapsack problem.</li>
         </ul>
       </div>
-    </>
+    </div>
   );
 
   return (

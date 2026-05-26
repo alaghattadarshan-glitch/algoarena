@@ -59,7 +59,12 @@ const TreeArena = () => {
   };
 
   const treeInfo = (
-    <>
+    <div className="flex flex-col gap-6">
+      <div className="w-full rounded-2xl overflow-hidden border border-[#ff0080]/30 shadow-[0_0_30px_rgba(255,0,128,0.15)] relative">
+        <img src="/algoarena/img/tree_flowchart.png" alt="Tree Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+      </div>
+
       <div className="bg-black/40 border border-[#ff0080]/20 p-5 rounded-xl">
         <h3 className="text-[#ff0080] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Tree Data Structures</h3>
         <p className="mb-3 text-gray-300">
@@ -91,7 +96,7 @@ const TreeArena = () => {
           <li><strong>Machine Learning:</strong> Decision Trees and Random Forests use this architecture to classify data and make AI predictions.</li>
         </ul>
       </div>
-    </>
+    </div>
   );
 
   return (

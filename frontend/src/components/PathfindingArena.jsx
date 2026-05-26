@@ -19,7 +19,12 @@ const PathfindingArena = () => {
   const availableAlgos = ['BFS', 'DFS', 'Dijkstra', 'A* Search', 'Greedy Best-First', 'Bidirectional Swarm'];
 
   const pathfindingInfo = (
-    <>
+    <div className="flex flex-col gap-6">
+      <div className="w-full rounded-2xl overflow-hidden border border-[#9d00ff]/30 shadow-[0_0_30px_rgba(157,0,255,0.15)] relative">
+        <img src="/algoarena/img/pathfinding_flowchart.png" alt="Pathfinding Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+      </div>
+
       <div className="bg-black/40 border border-[#9d00ff]/20 p-5 rounded-xl">
         <h3 className="text-[#9d00ff] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Graph Traversal Mechanics</h3>
         <p className="mb-3 text-gray-300">
@@ -51,7 +56,7 @@ const PathfindingArena = () => {
           <li><strong>Network Routing:</strong> Internet packets use shortest-path algorithms like OSPF (Open Shortest Path First) to navigate router topologies.</li>
         </ul>
       </div>
-    </>
+    </div>
   );
 
   return (

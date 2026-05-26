@@ -5,7 +5,12 @@ import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 
 const Hero = () => {
   const sortingInfo = (
-    <>
+    <div className="flex flex-col gap-6">
+      <div className="w-full rounded-2xl overflow-hidden border border-[#00f3ff]/30 shadow-[0_0_30px_rgba(0,243,255,0.15)] relative">
+        <img src="/algoarena/img/sorting_flowchart.png" alt="Sorting Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+      </div>
+
       <div className="bg-black/40 border border-[#00f3ff]/20 p-5 rounded-xl">
         <h3 className="text-[#00f3ff] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Computational Mechanics</h3>
         <p className="mb-3 text-gray-300">
@@ -38,7 +43,7 @@ const Hero = () => {
           <li><strong>Compression Algorithms:</strong> The Burrows-Wheeler Transform (used in bzip2) requires sorting massive permutations of strings to optimize entropy.</li>
         </ul>
       </div>
-    </>
+    </div>
   );
 
   return (
