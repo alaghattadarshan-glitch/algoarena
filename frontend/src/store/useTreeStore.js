@@ -6,16 +6,18 @@ export const useTreeStore = create((set, get) => ({
   rootId: null,
   
   activeNodes: [], // For highlighting traversal path
+  traversalOutput: [], // Stores the result of tree traversals
   speed: 500, // ms per step
   status: 'idle', // 'idle', 'animating'
 
   setSpeed: (speed) => set({ speed }),
   
-  clearTree: () => set({ nodes: [], edges: [], rootId: null, activeNodes: [], status: 'idle' }),
+  clearTree: () => set({ nodes: [], edges: [], rootId: null, activeNodes: [], traversalOutput: [], status: 'idle' }),
   
   // Directly set the finalized structural state (used by treeAlgorithms)
   setTreeState: (nodes, edges, rootId) => set({ nodes, edges, rootId }),
   
   setActiveNodes: (activeNodes) => set({ activeNodes }),
+  setTraversalOutput: (traversalOutput) => set({ traversalOutput }),
   setStatus: (status) => set({ status })
 }));

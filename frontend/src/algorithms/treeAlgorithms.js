@@ -97,3 +97,88 @@ export function* insertBSTNode(storeState, value) {
     }
   }
 }
+
+const getChildren = (nodeId, nodes, edges) => {
+  const node = nodes.find(n => n.id === nodeId);
+  let left = null, right = null;
+  edges.forEach(e => {
+    if (e.from === nodeId) {
+      if (nodes.find(n => n.id === e.to).value < node.value) left = e.to;
+      else right = e.to;
+    }
+  });
+  return { left, right };
+};
+
+export function* inOrderTraversal(storeState) {
+  const { nodes, edges, rootId, setActiveNodes, setTraversalOutput } = storeState;
+  const output = [];
+  
+  function* traverse(nodeId) {
+    if (!nodeId) return;
+    const { left, right } = getChildren(nodeId, nodes, edges);
+    
+    yield* traverse(left);
+    
+    setActiveNodes([nodeId]);
+    const node = nodes.find(n => n.id === nodeId);
+    output.push(node.value);
+    setTraversalOutput([...output]);
+    yield { finished: false };
+    
+    yield* traverse(right);
+  }
+  
+  setTraversalOutput([]);
+  yield* traverse(rootId);
+  setActiveNodes([]);
+  yield { finished: true };
+}
+
+export function* preOrderTraversal(storeState) {
+  const { nodes, edges, rootId, setActiveNodes, setTraversalOutput } = storeState;
+  const output = [];
+  
+  function* traverse(nodeId) {
+    if (!nodeId) return;
+    
+    setActiveNodes([nodeId]);
+    const node = nodes.find(n => n.id === nodeId);
+    output.push(node.value);
+    setTraversalOutput([...output]);
+    yield { finished: false };
+    
+    const { left, right } = getChildren(nodeId, nodes, edges);
+    yield* traverse(left);
+    yield* traverse(right);
+  }
+  
+  setTraversalOutput([]);
+  yield* traverse(rootId);
+  setActiveNodes([]);
+  yield { finished: true };
+}
+
+export function* postOrderTraversal(storeState) {
+  const { nodes, edges, rootId, setActiveNodes, setTraversalOutput } = storeState;
+  const output = [];
+  
+  function* traverse(nodeId) {
+    if (!nodeId) return;
+    const { left, right } = getChildren(nodeId, nodes, edges);
+    
+    yield* traverse(left);
+    yield* traverse(right);
+    
+    setActiveNodes([nodeId]);
+    const node = nodes.find(n => n.id === nodeId);
+    output.push(node.value);
+    setTraversalOutput([...output]);
+    yield { finished: false };
+  }
+  
+  setTraversalOutput([]);
+  yield* traverse(rootId);
+  setActiveNodes([]);
+  yield { finished: true };
+}

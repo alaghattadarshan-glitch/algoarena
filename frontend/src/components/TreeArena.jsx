@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useTreeStore } from '../store/useTreeStore';
 import TreeVisualizer from '../visualizers/TreeVisualizer';
-import { insertBSTNode } from '../algorithms/treeAlgorithms';
+import { insertBSTNode, inOrderTraversal, preOrderTraversal, postOrderTraversal } from '../algorithms/treeAlgorithms';
 
 const TreeArena = () => {
-  const { nodes, rootId, clearTree, speed, setSpeed, setTreeState } = useTreeStore();
+  const { nodes, rootId, clearTree, speed, setSpeed, setTreeState, traversalOutput } = useTreeStore();
   const [inputValue, setInputValue] = useState('');
 
   const handleInsert = async (e) => {
@@ -12,21 +12,34 @@ const TreeArena = () => {
     const val = parseInt(inputValue);
     if (isNaN(val)) return;
     
-    // We run the generator directly here for simplicity since trees are fast
     const generator = insertBSTNode(useTreeStore.getState(), val);
-    
-    // A simple runner for the generator animation
     const runAnimation = async () => {
       let result = generator.next();
       while (!result.done) {
-        // Wait based on speed
         await new Promise(resolve => setTimeout(resolve, 1000 - speed + 50));
         result = generator.next();
       }
     };
-    
     runAnimation();
     setInputValue('');
+  };
+
+  const handleTraversal = async (type) => {
+    let generator;
+    if (type === 'inorder') generator = inOrderTraversal(useTreeStore.getState());
+    else if (type === 'preorder') generator = preOrderTraversal(useTreeStore.getState());
+    else if (type === 'postorder') generator = postOrderTraversal(useTreeStore.getState());
+    
+    if (!generator) return;
+    
+    const runAnimation = async () => {
+      let result = generator.next();
+      while (!result.done) {
+        await new Promise(resolve => setTimeout(resolve, 1000 - speed + 50));
+        result = generator.next();
+      }
+    };
+    runAnimation();
   };
 
   const generateRandomTree = async () => {
@@ -37,7 +50,7 @@ const TreeArena = () => {
     }
     for(let val of vals) {
        const generator = insertBSTNode(useTreeStore.getState(), val);
-       while(!generator.next().done) {} // run instantly
+       while(!generator.next().done) {} 
     }
   };
 
@@ -98,10 +111,40 @@ const TreeArena = () => {
           </div>
 
         </div>
+
+        {/* Traversal Controls */}
+        <div className="mt-6 pt-6 border-t border-white/10">
+          <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Tree Sorting & Traversals</h3>
+          <div className="flex flex-wrap gap-3">
+             <button onClick={() => handleTraversal('inorder')} className="px-4 py-1.5 rounded-md text-sm font-medium bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:border-[#ff0080] transition-all">
+               In-Order (Sorts Ascending)
+             </button>
+             <button onClick={() => handleTraversal('preorder')} className="px-4 py-1.5 rounded-md text-sm font-medium bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:border-[#ff0080] transition-all">
+               Pre-Order
+             </button>
+             <button onClick={() => handleTraversal('postorder')} className="px-4 py-1.5 rounded-md text-sm font-medium bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 hover:border-[#ff0080] transition-all">
+               Post-Order
+             </button>
+          </div>
+        </div>
       </div>
 
+      {/* Traversal Output Bar */}
+      {traversalOutput.length > 0 && (
+        <div className="mb-6 bg-[#050505] border border-white/10 rounded-xl p-4 flex items-center gap-4 overflow-x-auto">
+          <span className="text-[#ff0080] font-black uppercase text-sm whitespace-nowrap">Traversal Output:</span>
+          <div className="flex gap-2">
+            {traversalOutput.map((val, i) => (
+              <span key={i} className="w-10 h-10 flex items-center justify-center bg-black border border-[#ff0080]/50 rounded-lg text-white font-mono font-bold shadow-[0_0_10px_rgba(255,0,128,0.2)]">
+                {val}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Visualizer Canvas */}
-      <div className="bg-[#050505] rounded-2xl border border-white/10 w-full h-[600px] relative overflow-hidden flex items-center justify-center">
+      <div className="bg-[#050505] rounded-2xl border border-white/10 w-full h-[600px] relative overflow-hidden flex items-center justify-center mb-12">
          {nodes.length === 0 ? (
            <span className="text-gray-500 font-mono">Tree is empty. Insert a node to begin.</span>
          ) : (
