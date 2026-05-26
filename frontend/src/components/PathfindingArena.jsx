@@ -19,6 +19,28 @@ const PathfindingArena = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-10">
       
+      {/* Header Info */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#9d00ff] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(157,0,255,0.3)]">
+          Pathfinding Arena
+        </h1>
+        
+        <div className="max-w-4xl bg-black/40 border border-[#9d00ff]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(157,0,255,0.05)]">
+          <h3 className="text-[#9d00ff] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
+            <span className="w-2 h-2 bg-[#9d00ff] rounded-full animate-pulse"></span>
+            About Pathfinding Algorithms
+          </h3>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">How they work:</strong> Pathfinding algorithms search through a mathematical graph (like a grid of nodes) to find a route from a Start point to a Destination. They use different strategies—some blindly explore everything (BFS), while others use intelligent heuristics (A*) to "guess" the right direction.
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">Why they matter:</strong> Without efficient pathfinding, calculating optimal routes would require exponentional time. A* and Dijkstra guarantee the shortest path while exploring the minimum necessary nodes.
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed">
+            <strong className="text-white">Real-world applications:</strong> GPS Navigation (Google Maps), AI character routing in video games, network packet routing protocols, robot vacuum cleaners, and self-driving car logistics.
+          </p>
+        </div>
+      </div>
       {/* Graph Control Panel */}
       <div className="glass-panel p-6 rounded-2xl w-full mx-auto mb-8 border border-[#9d00ff]/30 z-10 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

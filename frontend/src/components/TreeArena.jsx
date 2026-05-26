@@ -58,6 +58,29 @@ const TreeArena = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-10">
       
+      {/* Header Info */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#ff0080] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(255,0,128,0.3)]">
+          Tree Arena
+        </h1>
+        
+        <div className="max-w-4xl bg-black/40 border border-[#ff0080]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(255,0,128,0.05)]">
+          <h3 className="text-[#ff0080] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
+            <span className="w-2 h-2 bg-[#ff0080] rounded-full animate-pulse"></span>
+            About Tree Data Structures
+          </h3>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">How they work:</strong> Trees are hierarchical data structures consisting of "Nodes" connected by "Edges". Unlike arrays which are linear, trees branch out. A Binary Search Tree (BST) organizes data mathematically so that the left child is always smaller than the parent, and the right child is larger.
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">Why they matter:</strong> Trees provide the perfect balance between the fast search times of a sorted array $O(\log N)$ and the fast insertion/deletion times of a linked list. Traversing a tree using specific strategies (In-Order) can instantly retrieve all data perfectly sorted!
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed">
+            <strong className="text-white">Real-world applications:</strong> File systems (folders/directories), Document Object Model (DOM) in web browsers, Abstract Syntax Trees (AST) in code compilers, and decision trees in Machine Learning models.
+          </p>
+        </div>
+      </div>
+      
       {/* Control Panel */}
       <div className="glass-panel p-6 rounded-2xl w-full mx-auto mb-8 border border-[#ff0080]/30 z-10 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -102,14 +102,25 @@ const DPArena = () => {
     <div className="max-w-7xl mx-auto px-4 py-8">
       
       {/* Header Info */}
-      <div className="mb-8 flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ffae00] to-yellow-300 uppercase tracking-widest flex items-center gap-3">
-            <Settings2 className="w-8 h-8 text-[#ffae00]" />
-            Dynamic Programming Matrix
-          </h1>
-          <p className="text-gray-400 mt-2 max-w-2xl">
-            Visualize the hidden 2D memoization tables that power complex DP algorithms. Watch how cells dynamically inherit values from sub-problems.
+      <div className="mb-8">
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#ffae00] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(255,174,0,0.3)] flex items-center gap-3">
+          <Settings2 className="w-8 h-8 text-[#ffae00]" />
+          Dynamic Programming Matrix
+        </h1>
+        
+        <div className="max-w-4xl bg-black/40 border border-[#ffae00]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(255,174,0,0.05)]">
+          <h3 className="text-[#ffae00] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
+            <span className="w-2 h-2 bg-[#ffae00] rounded-full animate-pulse"></span>
+            About Dynamic Programming
+          </h3>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">How it works:</strong> Dynamic Programming (DP) is a mathematical optimization method that breaks down complex problems into overlapping "sub-problems". Instead of recalculating the sub-problems repeatedly, DP stores their answers in a 2D memory grid (Memoization) and builds the final solution bottom-up.
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            <strong className="text-white">Why it matters:</strong> Problems like the Knapsack Problem would normally take exponential time $O(2^N)$ to check every combination. By using DP matrices to remember past states, we can collapse that time complexity down to a highly efficient $O(N \times W)$.
+          </p>
+          <p className="text-gray-300 text-sm leading-relaxed">
+            <strong className="text-white">Real-world applications:</strong> DNA Sequencing (Longest Common Subsequence), financial portfolio optimization, calculating diffs in version control systems (like Git), routing algorithms in computer networks, and natural language processing.
           </p>
         </div>
       </div>
