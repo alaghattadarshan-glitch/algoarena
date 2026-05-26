@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTreeStore } from '../store/useTreeStore';
 import TreeVisualizer from '../visualizers/TreeVisualizer';
 import { insertBSTNode, inOrderTraversal, preOrderTraversal, postOrderTraversal } from '../algorithms/treeAlgorithms';
 
 const TreeArena = () => {
-  const { nodes, rootId, clearTree, speed, setSpeed, setTreeState, traversalOutput } = useTreeStore();
+  const { nodes, clearTree, speed, setSpeed, traversalOutput } = useTreeStore();
   const [inputValue, setInputValue] = useState('');
 
   const handleInsert = async (e) => {
@@ -50,6 +50,7 @@ const TreeArena = () => {
     }
     for(let val of vals) {
        const generator = insertBSTNode(useTreeStore.getState(), val);
+       // eslint-disable-next-line no-empty
        while(!generator.next().done) {} 
     }
   };

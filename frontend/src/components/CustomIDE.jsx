@@ -12,9 +12,8 @@ const CustomIDE = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = () => {
-    // Add custom sort to algorithms if not there
     if (!algorithms.includes('Custom Sort')) {
-      useRaceStore.setState({ algorithms: [...algorithms, 'Custom Sort'] });
+      useRaceStore.getState().toggleAlgorithm('Custom Sort');
     }
     setIsOpen(false);
   };
