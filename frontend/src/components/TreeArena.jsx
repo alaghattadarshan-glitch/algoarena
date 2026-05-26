@@ -3,6 +3,9 @@ import { useTreeStore } from '../store/useTreeStore';
 import TreeVisualizer from '../visualizers/TreeVisualizer';
 import { insertBSTNode, inOrderTraversal, preOrderTraversal, postOrderTraversal } from '../algorithms/treeAlgorithms';
 
+import InfoModal from './InfoModal';
+import { Cpu, Globe2, Lightbulb } from 'lucide-react';
+
 const TreeArena = () => {
   const { nodes, clearTree, speed, setSpeed, traversalOutput } = useTreeStore();
   const [inputValue, setInputValue] = useState('');
@@ -55,30 +58,51 @@ const TreeArena = () => {
     }
   };
 
+  const treeInfo = (
+    <>
+      <div className="bg-black/40 border border-[#ff0080]/20 p-5 rounded-xl">
+        <h3 className="text-[#ff0080] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Tree Data Structures</h3>
+        <p className="mb-3 text-gray-300">
+          Trees are hierarchical data structures consisting of "Nodes" connected by "Edges". Unlike arrays which are linear, trees branch out, allowing for complex relational mapping.
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Binary Search Tree (BST):</strong> Organizes data mathematically so that the left child is always smaller than the parent, and the right child is larger. This enables $O(\log N)$ search times.</li>
+          <li><strong>Root & Leaves:</strong> The absolute top node is the "Root". Any node at the bottom without children is a "Leaf".</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Recursive Traversals</h3>
+        <p className="mb-3 text-gray-300">
+          Because trees are not linear, you cannot just loop from 0 to N. You must use recursive logic to explore the branches.
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>In-Order (Left, Root, Right):</strong> Extremely powerful! When run on a BST, it retrieves all the data perfectly sorted in ascending order!</li>
+          <li><strong>Pre-Order (Root, Left, Right):</strong> Explores the parent before the children. Used to perfectly clone a tree or serialize it for storage.</li>
+          <li><strong>Post-Order (Left, Right, Root):</strong> Explores all the way to the leaves first. Used to safely delete a tree from the bottom up without creating memory leaks!</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>Web Browsers (DOM):</strong> The HTML on this very webpage is parsed and rendered as a "Document Object Model" Tree.</li>
+          <li><strong>File Systems:</strong> Your computer's folders and directories are mathematically represented as a Tree data structure.</li>
+          <li><strong>Machine Learning:</strong> Decision Trees and Random Forests use this architecture to classify data and make AI predictions.</li>
+        </ul>
+      </div>
+    </>
+  );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-10">
+    <div className="max-w-7xl mx-auto px-4 pt-10 relative">
+      <InfoModal title="The Science of Trees" content={treeInfo} />
       
       {/* Header Info */}
-      <div className="mb-8">
+      <div className="mb-8 relative z-10 pointer-events-none">
         <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#ff0080] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(255,0,128,0.3)]">
           Tree Arena
         </h1>
-        
-        <div className="max-w-4xl bg-black/40 border border-[#ff0080]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(255,0,128,0.05)]">
-          <h3 className="text-[#ff0080] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#ff0080] rounded-full animate-pulse"></span>
-            About Tree Data Structures
-          </h3>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">How they work:</strong> Trees are hierarchical data structures consisting of "Nodes" connected by "Edges". Unlike arrays which are linear, trees branch out. A Binary Search Tree (BST) organizes data mathematically so that the left child is always smaller than the parent, and the right child is larger.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">Why they matter:</strong> Trees provide the perfect balance between the fast search times of a sorted array $O(\log N)$ and the fast insertion/deletion times of a linked list. Traversing a tree using specific strategies (In-Order) can instantly retrieve all data perfectly sorted!
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
-            <strong className="text-white">Real-world applications:</strong> File systems (folders/directories), Document Object Model (DOM) in web browsers, Abstract Syntax Trees (AST) in code compilers, and decision trees in Machine Learning models.
-          </p>
-        </div>
       </div>
       
       {/* Control Panel */}

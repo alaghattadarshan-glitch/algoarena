@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useGraphStore } from '../store/useGraphStore';
 import GraphGrid from '../visualizers/GraphGrid';
 import GraphEngine from './GraphEngine';
+import InfoModal from './InfoModal';
+import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PathfindingArena = () => {
@@ -16,30 +18,51 @@ const PathfindingArena = () => {
 
   const availableAlgos = ['BFS', 'DFS', 'Dijkstra', 'A* Search', 'Greedy Best-First', 'Bidirectional Swarm'];
 
+  const pathfindingInfo = (
+    <>
+      <div className="bg-black/40 border border-[#9d00ff]/20 p-5 rounded-xl">
+        <h3 className="text-[#9d00ff] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Graph Traversal Mechanics</h3>
+        <p className="mb-3 text-gray-300">
+          Pathfinding algorithms explore a mathematical graph (like a grid of nodes) to find a route from a Start point to a Destination while avoiding obstacles.
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Uninformed Search:</strong> Algorithms like BFS (Breadth-First) expand equally in all directions, guaranteeing the shortest path but wasting massive amounts of compute time on irrelevant areas.</li>
+          <li><strong>Heuristics:</strong> Algorithms like A* use a "heuristic" (a smart guess, like calculating the straight-line Manhattan distance to the target) to prioritize exploring nodes that seem closer to the goal.</li>
+          <li><strong>Weights:</strong> In real networks (like roads), some paths cost more than others (traffic, tolls). Dijkstra's algorithm perfectly handles these weighted graphs.</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Algorithmic Optimization</h3>
+        <p className="mb-3 text-gray-300">
+          Reducing the search space is critical for high-performance pathfinding.
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Bidirectional Swarm:</strong> Initiating a search from both the Start node and the End node simultaneously mathematically cuts the search space exponent in half!</li>
+          <li><strong>Greedy Best-First:</strong> By ignoring the cost of the path taken and blindly rushing towards the target heuristic, it finds *a* path extremely fast, but sacrifices the guarantee of it being the *shortest* path.</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>GPS & Mapping:</strong> Google Maps relies heavily on A* and Dijkstra variants to calculate the fastest route between two cities considering traffic weights.</li>
+          <li><strong>Video Game AI:</strong> NPCs use A* pathfinding on "NavMeshes" to navigate around obstacles and chase the player.</li>
+          <li><strong>Network Routing:</strong> Internet packets use shortest-path algorithms like OSPF (Open Shortest Path First) to navigate router topologies.</li>
+        </ul>
+      </div>
+    </>
+  );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-10">
+    <div className="max-w-7xl mx-auto px-4 pt-10 relative">
+      <InfoModal title="The Science of Pathfinding" content={pathfindingInfo} />
       
       {/* Header Info */}
-      <div className="mb-8">
+      <div className="mb-8 relative z-10 pointer-events-none">
         <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#9d00ff] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(157,0,255,0.3)]">
           Pathfinding Arena
         </h1>
-        
-        <div className="max-w-4xl bg-black/40 border border-[#9d00ff]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(157,0,255,0.05)]">
-          <h3 className="text-[#9d00ff] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#9d00ff] rounded-full animate-pulse"></span>
-            About Pathfinding Algorithms
-          </h3>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">How they work:</strong> Pathfinding algorithms search through a mathematical graph (like a grid of nodes) to find a route from a Start point to a Destination. They use different strategies—some blindly explore everything (BFS), while others use intelligent heuristics (A*) to "guess" the right direction.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">Why they matter:</strong> Without efficient pathfinding, calculating optimal routes would require exponentional time. A* and Dijkstra guarantee the shortest path while exploring the minimum necessary nodes.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
-            <strong className="text-white">Real-world applications:</strong> GPS Navigation (Google Maps), AI character routing in video games, network packet routing protocols, robot vacuum cleaners, and self-driving car logistics.
-          </p>
-        </div>
       </div>
       {/* Graph Control Panel */}
       <div className="glass-panel p-6 rounded-2xl w-full mx-auto mb-8 border border-[#9d00ff]/30 z-10 relative">

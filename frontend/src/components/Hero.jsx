@@ -1,9 +1,50 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import InfoModal from './InfoModal';
+import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 
 const Hero = () => {
+  const sortingInfo = (
+    <>
+      <div className="bg-black/40 border border-[#00f3ff]/20 p-5 rounded-xl">
+        <h3 className="text-[#00f3ff] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Computational Mechanics</h3>
+        <p className="mb-3 text-gray-300">
+          Sorting algorithms transform a mathematically disordered dataset into a structured, monotonic sequence (either ascending or descending).
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Comparisons:</strong> The engine asks "Is Element A larger than Element B?" This is the core logic engine of $O(N \log N)$ bounds.</li>
+          <li><strong>Swaps:</strong> The physical memory operation of transposing two values. Swapping is often more expensive than comparing in physical hardware!</li>
+          <li><strong>In-Place vs Out-of-Place:</strong> "In-Place" algorithms (like Quick Sort) modify the original array, using $O(1)$ memory. "Out-of-Place" (like Merge Sort) require an entirely separate $O(N)$ memory buffer.</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl">
+        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Algorithmic Tradeoffs</h3>
+        <p className="mb-3 text-gray-300">
+          There is no "perfect" algorithm. Choosing the right one depends entirely on the dataset:
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Nearly Sorted Data:</strong> Insertion Sort operates in nearly $O(N)$ linear time!</li>
+          <li><strong>Massive Datasets:</strong> Radix Sort ignores comparisons entirely and uses memory "buckets" to sort integers in $O(N)$ time.</li>
+          <li><strong>Memory Constrained:</strong> Heap Sort guarantees $O(N \log N)$ worst-case performance while using exactly $O(1)$ extra memory.</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl">
+        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>Database Engines (PostgreSQL / MySQL):</strong> Indexing petabytes of data using B-Trees and specific sorting derivatives to allow hyper-fast querying.</li>
+          <li><strong>Computer Graphics:</strong> Painter's Algorithm and Z-buffering require sorting polygons by depth distance from the camera before rendering frames to the GPU.</li>
+          <li><strong>Compression Algorithms:</strong> The Burrows-Wheeler Transform (used in bzip2) requires sorting massive permutations of strings to optimize entropy.</li>
+        </ul>
+      </div>
+    </>
+  );
+
   return (
-    <div className="relative overflow-hidden pt-20 pb-16 flex flex-col items-center justify-center min-h-[50vh] px-4 text-center">
+    <div className="relative overflow-hidden pt-20 pb-16 flex flex-col items-center justify-center min-h-[40vh] px-4 text-center">
+      <InfoModal title="The Science of Sorting" content={sortingInfo} />
+      
       {/* Background visual elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
       
@@ -21,22 +62,6 @@ const Hero = () => {
         <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-6 leading-relaxed">
           Watch multiple algorithms compete in real-time. Configure datasets, adjust execution speeds, and analyze live performance metrics.
         </p>
-
-        <div className="max-w-4xl mx-auto bg-black/40 border border-[#00f3ff]/20 rounded-2xl p-6 text-left backdrop-blur-sm mb-10 shadow-[0_0_30px_rgba(0,243,255,0.05)]">
-          <h3 className="text-[#00f3ff] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#00f3ff] rounded-full animate-pulse"></span>
-            About Sorting Algorithms
-          </h3>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">How they work:</strong> Sorting algorithms take an unordered collection of data and arrange it mathematically into a specific sequence (ascending or descending) using comparisons, swaps, or bucketing strategies.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">Why they matter:</strong> Searching through an unsorted dataset takes linear time $O(N)$. By sorting the data first, we can unlock blazing fast algorithms like Binary Search to find items in $O(\log N)$ time.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
-            <strong className="text-white">Real-world applications:</strong> Database indexing (SQL), rendering graphics by depth (Z-buffering), optimizing e-commerce search results, processing scheduling in OS kernels, and compressing data.
-          </p>
-        </div>
       </motion.div>
     </div>
   );

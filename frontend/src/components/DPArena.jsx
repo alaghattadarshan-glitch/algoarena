@@ -5,6 +5,9 @@ import { lcsAlgorithm, knapsackAlgorithm } from '../algorithms/dpAlgorithms';
 import { Play, RotateCcw, Settings2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import InfoModal from './InfoModal';
+import { Cpu, Globe2, Lightbulb } from 'lucide-react';
+
 const DPArena = () => {
   const { speed, setSpeed, initGrid, updateCell, setActiveCell, setReferenceCells, setMatchCells, setStatus, status } = useDpStore();
   
@@ -98,31 +101,51 @@ const DPArena = () => {
     setStatus('idle');
   };
 
+  const dpInfo = (
+    <>
+      <div className="bg-black/40 border border-[#ffae00]/20 p-5 rounded-xl">
+        <h3 className="text-[#ffae00] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Memoization Mechanics</h3>
+        <p className="mb-3 text-gray-300">
+          Dynamic Programming (DP) is a mathematical optimization method that breaks down complex problems into overlapping "sub-problems".
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>Memoization (The Matrix):</strong> Instead of recalculating the same sub-problems repeatedly, DP stores their answers in a 2D memory grid and builds the final solution bottom-up.</li>
+          <li><strong>State Transitions:</strong> The highlighted cell (Orange) represents the current calculation. The "Reference" cells (Cyan) show you exactly which previously solved sub-problems are being used to compute the current answer!</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Algorithmic Optimization</h3>
+        <p className="mb-3 text-gray-300">
+          DP takes impossible algorithms and makes them lightning fast.
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-gray-400">
+          <li><strong>0/1 Knapsack Problem:</strong> A thief has a bag with a weight capacity. Given items with specific weights and values, what is the maximum value he can steal? Normally this takes exponential time $O(2^N)$ to check every combination. By using DP, we collapse that down to $O(N \times W)$!</li>
+          <li><strong>Longest Common Subsequence:</strong> Finding the longest matching sequence of characters between two strings. Using DP, this is solved in $O(M \times N)$ by traversing the grid and inheriting diagonal matches.</li>
+        </ul>
+      </div>
+
+      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
+        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
+        <ul className="list-disc pl-5 space-y-2 text-gray-300">
+          <li><strong>DNA Sequencing:</strong> Biologists use LCS algorithms to find similarities between DNA strands to determine genetic lineage.</li>
+          <li><strong>Git / Version Control:</strong> When you run `git diff`, it uses an LCS algorithm to highlight exactly which lines of code changed between two commits!</li>
+          <li><strong>Financial Trading:</strong> Portfolio optimization and maximizing return-on-investment within specific budget constraints uses exactly the same math as the 0/1 Knapsack problem.</li>
+        </ul>
+      </div>
+    </>
+  );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 relative">
+      <InfoModal title="The Science of DP Matrices" content={dpInfo} />
       
       {/* Header Info */}
-      <div className="mb-8">
+      <div className="mb-8 relative z-10 pointer-events-none">
         <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#ffae00] uppercase tracking-widest mb-6 drop-shadow-[0_0_15px_rgba(255,174,0,0.3)] flex items-center gap-3">
           <Settings2 className="w-8 h-8 text-[#ffae00]" />
           Dynamic Programming Matrix
         </h1>
-        
-        <div className="max-w-4xl bg-black/40 border border-[#ffae00]/20 rounded-2xl p-6 text-left backdrop-blur-sm shadow-[0_0_30px_rgba(255,174,0,0.05)]">
-          <h3 className="text-[#ffae00] font-bold uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#ffae00] rounded-full animate-pulse"></span>
-            About Dynamic Programming
-          </h3>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">How it works:</strong> Dynamic Programming (DP) is a mathematical optimization method that breaks down complex problems into overlapping "sub-problems". Instead of recalculating the sub-problems repeatedly, DP stores their answers in a 2D memory grid (Memoization) and builds the final solution bottom-up.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed mb-4">
-            <strong className="text-white">Why it matters:</strong> Problems like the Knapsack Problem would normally take exponential time $O(2^N)$ to check every combination. By using DP matrices to remember past states, we can collapse that time complexity down to a highly efficient $O(N \times W)$.
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
-            <strong className="text-white">Real-world applications:</strong> DNA Sequencing (Longest Common Subsequence), financial portfolio optimization, calculating diffs in version control systems (like Git), routing algorithms in computer networks, and natural language processing.
-          </p>
-        </div>
       </div>
 
       {/* Control Panel */}
