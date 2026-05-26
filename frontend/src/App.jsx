@@ -9,6 +9,7 @@ import AIAnalyst from './components/AIAnalyst';
 import PathfindingArena from './components/PathfindingArena';
 import { useRaceStore } from './store/useRaceStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import TreeArena from './components/TreeArena';
 
 function App() {
   const { algorithms, winner, raceStatus, arenaMode, setArenaMode } = useRaceStore();
@@ -30,6 +31,12 @@ function App() {
         >
           Pathfinding Arena
         </button>
+        <button 
+          onClick={() => setArenaMode('tree')}
+          className={`font-black tracking-widest uppercase transition-colors ${arenaMode === 'tree' ? 'text-[#ff0080] drop-shadow-[0_0_10px_#ff0080]' : 'text-gray-500 hover:text-white'}`}
+        >
+          Tree Arena
+        </button>
       </div>
 
       <RaceEngine />
@@ -43,7 +50,7 @@ function App() {
 
       <div className="relative z-10 pt-20">
         
-        {arenaMode === 'sorting' ? (
+        {arenaMode === 'sorting' && (
           <>
             <Hero />
             <CustomIDE />
@@ -87,8 +94,14 @@ function App() {
               <ComparisonCharts />
             </div>
           </>
-        ) : (
+        )}
+        
+        {arenaMode === 'graph' && (
           <PathfindingArena />
+        )}
+
+        {arenaMode === 'tree' && (
+          <TreeArena />
         )}
 
       </div>
