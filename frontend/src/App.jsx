@@ -6,9 +6,10 @@ import ComparisonCharts from './components/ComparisonCharts';
 import RaceEngine from './components/RaceEngine';
 import AIAnalyst from './components/AIAnalyst';
 import PathfindingArena from './components/PathfindingArena';
+import TreeArena from './components/TreeArena';
+import DPArena from './components/DPArena';
 import { useRaceStore } from './store/useRaceStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import TreeArena from './components/TreeArena';
 
 function App() {
   const { algorithms, winner, raceStatus, arenaMode, setArenaMode } = useRaceStore();
@@ -17,24 +18,30 @@ function App() {
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-[#00f3ff] selection:text-black font-sans pb-20 relative overflow-x-hidden">
       
       {/* Top Navigation */}
-      <div className="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/10 flex justify-center gap-8 py-4">
+      <div className="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/10 flex justify-center gap-6 py-4 px-4 overflow-x-auto whitespace-nowrap">
         <button 
           onClick={() => setArenaMode('sorting')}
-          className={`font-black tracking-widest uppercase transition-colors ${arenaMode === 'sorting' ? 'text-[#00f3ff] drop-shadow-[0_0_10px_#00f3ff]' : 'text-gray-500 hover:text-white'}`}
+          className={`font-black tracking-widest uppercase transition-colors text-sm ${arenaMode === 'sorting' ? 'text-[#00f3ff] drop-shadow-[0_0_10px_#00f3ff]' : 'text-gray-500 hover:text-white'}`}
         >
           Sorting Arena
         </button>
         <button 
           onClick={() => setArenaMode('graph')}
-          className={`font-black tracking-widest uppercase transition-colors ${arenaMode === 'graph' ? 'text-[#9d00ff] drop-shadow-[0_0_10px_#9d00ff]' : 'text-gray-500 hover:text-white'}`}
+          className={`font-black tracking-widest uppercase transition-colors text-sm ${arenaMode === 'graph' ? 'text-[#9d00ff] drop-shadow-[0_0_10px_#9d00ff]' : 'text-gray-500 hover:text-white'}`}
         >
           Pathfinding Arena
         </button>
         <button 
           onClick={() => setArenaMode('tree')}
-          className={`font-black tracking-widest uppercase transition-colors ${arenaMode === 'tree' ? 'text-[#ff0080] drop-shadow-[0_0_10px_#ff0080]' : 'text-gray-500 hover:text-white'}`}
+          className={`font-black tracking-widest uppercase transition-colors text-sm ${arenaMode === 'tree' ? 'text-[#ff0080] drop-shadow-[0_0_10px_#ff0080]' : 'text-gray-500 hover:text-white'}`}
         >
           Tree Arena
+        </button>
+        <button 
+          onClick={() => setArenaMode('dp')}
+          className={`font-black tracking-widest uppercase transition-colors text-sm ${arenaMode === 'dp' ? 'text-[#ffae00] drop-shadow-[0_0_10px_#ffae00]' : 'text-gray-500 hover:text-white'}`}
+        >
+          DP Matrix
         </button>
       </div>
 
@@ -100,6 +107,10 @@ function App() {
 
         {arenaMode === 'tree' && (
           <TreeArena />
+        )}
+
+        {arenaMode === 'dp' && (
+          <DPArena />
         )}
 
       </div>
