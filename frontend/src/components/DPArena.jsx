@@ -5,7 +5,7 @@ import { lcsAlgorithm, knapsackAlgorithm } from '../algorithms/dpAlgorithms';
 import { Play, RotateCcw, Settings2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-import InfoModal from './InfoModal';
+import AlgorithmWikiModal from './AlgorithmWikiModal';
 import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 
 const DPArena = () => {
@@ -101,49 +101,56 @@ const DPArena = () => {
     setStatus('idle');
   };
 
-  const dpInfo = (
-    <div className="flex flex-col gap-6">
-      <div className="w-full rounded-2xl overflow-hidden border border-[#ffae00]/30 shadow-[0_0_30px_rgba(255,174,0,0.15)] relative">
-        <img src="/algoarena/img/dp_flowchart.png" alt="Dynamic Programming Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
-      </div>
-
-      <div className="bg-black/40 border border-[#ffae00]/20 p-5 rounded-xl">
-        <h3 className="text-[#ffae00] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Memoization Mechanics</h3>
-        <p className="mb-3 text-gray-300">
-          Dynamic Programming (DP) is a mathematical optimization method that breaks down complex problems into overlapping "sub-problems".
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>Memoization (The Matrix):</strong> Instead of recalculating the same sub-problems repeatedly, DP stores their answers in a 2D memory grid and builds the final solution bottom-up.</li>
-          <li><strong>State Transitions:</strong> The highlighted cell (Orange) represents the current calculation. The "Reference" cells (Cyan) show you exactly which previously solved sub-problems are being used to compute the current answer!</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Algorithmic Optimization</h3>
-        <p className="mb-3 text-gray-300">
-          DP takes impossible algorithms and makes them lightning fast.
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>0/1 Knapsack Problem:</strong> A thief has a bag with a weight capacity. Given items with specific weights and values, what is the maximum value he can steal? Normally this takes exponential time $O(2^N)$ to check every combination. By using DP, we collapse that down to $O(N \times W)$!</li>
-          <li><strong>Longest Common Subsequence:</strong> Finding the longest matching sequence of characters between two strings. Using DP, this is solved in $O(M \times N)$ by traversing the grid and inheriting diagonal matches.</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
-        <ul className="list-disc pl-5 space-y-2 text-gray-300">
-          <li><strong>DNA Sequencing:</strong> Biologists use LCS algorithms to find similarities between DNA strands to determine genetic lineage.</li>
-          <li><strong>Git / Version Control:</strong> When you run `git diff`, it uses an LCS algorithm to highlight exactly which lines of code changed between two commits!</li>
-          <li><strong>Financial Trading:</strong> Portfolio optimization and maximizing return-on-investment within specific budget constraints uses exactly the same math as the 0/1 Knapsack problem.</li>
-        </ul>
-      </div>
-    </div>
-  );
+  const dpWikiData = [
+    {
+      id: 'lcs',
+      name: 'Longest Common Subsequence (LCS)',
+      imagePath: '/algoarena/img/dp_flowchart.png',
+      imageAlt: 'LCS Flowchart',
+      colorGradient: 'from-[#ffae00] to-yellow-300',
+      borderColor: 'border-[#ffae00]/30',
+      imageExplanation: "This visual represents a 2D matrix mapping two strings against each other. When characters match, it pulls the value from the top-left diagonal and adds 1 (moving diagonally down). When they don't match, it takes the maximum value from either the cell directly above or directly to the left, propagating the maximum sequence found so far.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">The LCS algorithm finds the longest subsequence common to all sequences in a set of sequences (often just two sequences). A subsequence is a sequence that appears in the same relative order, but not necessarily contiguous. It uses a 2D table to memoize overlapping subproblems.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(M * N) where M and N are the lengths of the two strings.</li>
+            <li><strong>Space:</strong> O(M * N) to store the 2D DP matrix.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>LCS is the exact algorithm used by `git diff` to determine what lines of code were added or deleted between two files. It is also heavily used in bioinformatics to compare DNA strands and find genetic similarities.</p>
+        </>
+      )
+    },
+    {
+      id: 'knapsack',
+      name: '0/1 Knapsack Problem',
+      imagePath: '/algoarena/img/dp_flowchart.png',
+      imageAlt: 'Knapsack Flowchart',
+      colorGradient: 'from-orange-500 to-red-500',
+      borderColor: 'border-orange-500/30',
+      imageExplanation: "This diagram shows the classic optimization problem. The matrix's Y-axis represents available items, and the X-axis represents current weight capacity. At every cell, the algorithm asks a binary question: 'Is the value of taking this item (and subtracting its weight) greater than the value of skipping it?'",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible. In '0/1' knapsack, you must either take the whole item or leave it (no fractions).</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(N * W) where N is the number of items and W is the knapsack capacity. (Note: this is Pseudo-polynomial time).</li>
+            <li><strong>Space:</strong> O(N * W) for the DP table.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Knapsack is used constantly in resource allocation and financial portfolio optimization, where you have a strict budget (capacity) and want to select the best possible combination of investments (items) to maximize your return-on-investment (value).</p>
+        </>
+      )
+    }
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 relative">
-      <InfoModal title="The Science of DP Matrices" content={dpInfo} />
+      <AlgorithmWikiModal title="Dynamic Programming Wiki" sections={dpWikiData} />
       
       {/* Header Info */}
       <div className="mb-8 relative z-10 pointer-events-none">

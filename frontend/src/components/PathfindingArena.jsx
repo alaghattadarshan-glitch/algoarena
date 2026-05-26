@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useGraphStore } from '../store/useGraphStore';
 import GraphGrid from '../visualizers/GraphGrid';
 import GraphEngine from './GraphEngine';
-import InfoModal from './InfoModal';
+import AlgorithmWikiModal from './AlgorithmWikiModal';
 import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,50 +18,144 @@ const PathfindingArena = () => {
 
   const availableAlgos = ['BFS', 'DFS', 'Dijkstra', 'A* Search', 'Greedy Best-First', 'Bidirectional Swarm'];
 
-  const pathfindingInfo = (
-    <div className="flex flex-col gap-6">
-      <div className="w-full rounded-2xl overflow-hidden border border-[#9d00ff]/30 shadow-[0_0_30px_rgba(157,0,255,0.15)] relative">
-        <img src="/algoarena/img/pathfinding_flowchart.png" alt="Pathfinding Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
-      </div>
-
-      <div className="bg-black/40 border border-[#9d00ff]/20 p-5 rounded-xl">
-        <h3 className="text-[#9d00ff] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Graph Traversal Mechanics</h3>
-        <p className="mb-3 text-gray-300">
-          Pathfinding algorithms explore a mathematical graph (like a grid of nodes) to find a route from a Start point to a Destination while avoiding obstacles.
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>Uninformed Search:</strong> Algorithms like BFS (Breadth-First) expand equally in all directions, guaranteeing the shortest path but wasting massive amounts of compute time on irrelevant areas.</li>
-          <li><strong>Heuristics:</strong> Algorithms like A* use a "heuristic" (a smart guess, like calculating the straight-line Manhattan distance to the target) to prioritize exploring nodes that seem closer to the goal.</li>
-          <li><strong>Weights:</strong> In real networks (like roads), some paths cost more than others (traffic, tolls). Dijkstra's algorithm perfectly handles these weighted graphs.</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Algorithmic Optimization</h3>
-        <p className="mb-3 text-gray-300">
-          Reducing the search space is critical for high-performance pathfinding.
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>Bidirectional Swarm:</strong> Initiating a search from both the Start node and the End node simultaneously mathematically cuts the search space exponent in half!</li>
-          <li><strong>Greedy Best-First:</strong> By ignoring the cost of the path taken and blindly rushing towards the target heuristic, it finds *a* path extremely fast, but sacrifices the guarantee of it being the *shortest* path.</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
-        <ul className="list-disc pl-5 space-y-2 text-gray-300">
-          <li><strong>GPS & Mapping:</strong> Google Maps relies heavily on A* and Dijkstra variants to calculate the fastest route between two cities considering traffic weights.</li>
-          <li><strong>Video Game AI:</strong> NPCs use A* pathfinding on "NavMeshes" to navigate around obstacles and chase the player.</li>
-          <li><strong>Network Routing:</strong> Internet packets use shortest-path algorithms like OSPF (Open Shortest Path First) to navigate router topologies.</li>
-        </ul>
-      </div>
-    </div>
-  );
+  const pathfindingWikiData = [
+    {
+      id: 'bfs',
+      name: 'Breadth-First Search',
+      imagePath: '/algoarena/img/bfs_flow.png',
+      imageAlt: 'BFS Flowchart',
+      colorGradient: 'from-cyan-400 to-blue-500',
+      borderColor: 'border-cyan-400/30',
+      imageExplanation: "This diagram shows a ripple-like expansion. A FIFO (First-In, First-Out) Queue manages the frontier, guaranteeing that all nodes at layer N are fully explored before any node at layer N+1 is touched. This perfectly symmetrical expansion is what guarantees the absolute shortest path in unweighted graphs.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">BFS starts at the tree root (or some arbitrary node of a graph, sometimes referred to as a 'search key') and explores all of the neighbor nodes at the present depth prior to moving on to the nodes at the next depth level.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(V + E) where V is vertices and E is edges.</li>
+            <li><strong>Space:</strong> O(V) to store the queue.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>BFS is used in peer-to-peer networks (like BitTorrent) to find all neighbor nodes, web crawlers to build search indexes layer by layer, and GPS navigation systems to find the shortest path when all roads have an equal distance cost.</p>
+        </>
+      )
+    },
+    {
+      id: 'dfs',
+      name: 'Depth-First Search',
+      imagePath: '/algoarena/img/dfs_flow.png',
+      imageAlt: 'DFS Flowchart',
+      colorGradient: 'from-purple-500 to-pink-500',
+      borderColor: 'border-purple-500/30',
+      imageExplanation: "This flowchart illustrates the blind, plunging nature of DFS. It uses a LIFO (Last-In, First-Out) Stack. The search immediately shoots down a single path as deep as possible until it hits a dead-end, at which point the stack 'pops' the nodes off to backtrack to the nearest intersection.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">DFS explores as far as possible along each branch before backtracking. It relies heavily on recursion (which inherently uses the system call stack) or a manual stack data structure to remember where to backtrack to once a dead end is reached.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(V + E).</li>
+            <li><strong>Space:</strong> O(V) for the stack memory.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>DFS is brilliant for maze generation, topological sorting (like compiling code dependencies where A must build before B), and finding strongly connected components in massive social network graphs.</p>
+        </>
+      )
+    },
+    {
+      id: 'dijkstra',
+      name: "Dijkstra's Algorithm",
+      imagePath: '/algoarena/img/dijkstra_flow.png',
+      imageAlt: 'Dijkstra Flowchart',
+      colorGradient: 'from-yellow-400 to-orange-500',
+      borderColor: 'border-yellow-400/30',
+      imageExplanation: "This diagram shows a graph with weighted edges (costs). Instead of a standard queue, Dijkstra uses a Priority Queue to constantly select the node with the lowest total travel cost from the Start node. This ensures it mathematically calculates the absolute shortest path around obstacles.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Dijkstra's algorithm finds the shortest path between nodes in a graph. It maintains a set of unvisited nodes and calculates a tentative distance for every node. It continually selects the unvisited node with the smallest tentative distance, updates its neighbors, and marks it as visited.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O((V + E) log V) with a binary heap priority queue.</li>
+            <li><strong>Space:</strong> O(V).</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Dijkstra is the backbone of network routing protocols (OSPF - Open Shortest Path First), finding the fastest route in Google Maps (factoring in traffic time as the 'weight'), and flight itinerary systems.</p>
+        </>
+      )
+    },
+    {
+      id: 'astar',
+      name: 'A* Search',
+      imagePath: '/algoarena/img/astar_flow.png',
+      imageAlt: 'A-Star Flowchart',
+      colorGradient: 'from-green-400 to-cyan-500',
+      borderColor: 'border-green-400/30',
+      imageExplanation: "The ultimate pathfinder. This flowchart shows the F = G + H calculation. It doesn't just calculate distance traveled (G), it uses a straight-line Heuristic (H) to 'guess' how close it is to the goal. This pulls the search beam directly toward the target like a magnet.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">A* is a 'smart' informed search algorithm. It combines the guaranteed shortest-path capabilities of Dijkstra with a heuristic (a rule-of-thumb guess, like Euclidean distance). At each step, it chooses the path that minimizes F(n) = G(n) + H(n).</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(E) in the best case, but bounded exponentially in the worst case depending on the heuristic quality.</li>
+            <li><strong>Space:</strong> O(V) as it stores all generated nodes in memory.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>A* is the undisputed king of Video Game AI. Almost every unit moving in a modern Strategy game (like StarCraft or Age of Empires) uses A* to navigate complex terrain while avoiding dynamic obstacles.</p>
+        </>
+      )
+    },
+    {
+      id: 'greedy',
+      name: 'Greedy Best-First Search',
+      imagePath: '/algoarena/img/greedy_flow.png',
+      imageAlt: 'Greedy Flowchart',
+      colorGradient: 'from-red-500 to-yellow-500',
+      borderColor: 'border-red-500/30',
+      imageExplanation: "This diagram illustrates the danger of being 'greedy'. The algorithm ignores the G-cost (how far it has traveled) and only looks at the H-cost (how close it looks to the goal). It sprints blindly toward the target, often getting trapped in dead-ends or finding sub-optimal zigzag paths.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Greedy Best-First explores the graph by expanding the most promising node chosen according to a specified rule. It uses only a heuristic function f(n) = h(n) to estimate the cost to the goal, completely ignoring the cost already incurred.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(b^m) worst case.</li>
+            <li><strong>Space:</strong> O(b^m) worst case.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Greedy is used when speed is absolutely critical and finding the mathematical 'best' path doesn't matter (e.g., real-time enemy AI swarming the player in a fast-paced shooter). It is incredibly fast, but does not guarantee the shortest path.</p>
+        </>
+      )
+    },
+    {
+      id: 'bidirectional',
+      name: 'Bidirectional Swarm',
+      imagePath: '/algoarena/img/pathfinding_flowchart.png',
+      imageAlt: 'Bidirectional Swarm Flowchart',
+      colorGradient: 'from-fuchsia-500 to-indigo-500',
+      borderColor: 'border-fuchsia-500/30',
+      imageExplanation: "This diagram shows a pincer maneuver. Two separate search algorithms (like BFS or A*) launch simultaneously—one from the Start Node, and one from the End Node. When the two frontiers collide in the middle, the paths are fused together.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Bidirectional search runs two simultaneous searches: one forward from the initial state and the other backward from the goal. It replaces a single massive search graph with two much smaller sub-graphs that meet in the middle.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(b^(d/2)). This is a massive optimization over O(b^d).</li>
+            <li><strong>Space:</strong> O(b^(d/2)).</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Used heavily in massive social network analysis (like checking the 'Degrees of Separation' between two LinkedIn users) where a standard BFS would quickly run out of memory trying to search billions of nodes.</p>
+        </>
+      )
+    }
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-10 relative">
-      <InfoModal title="The Science of Pathfinding" content={pathfindingInfo} />
+      <AlgorithmWikiModal title="Pathfinding Wiki" sections={pathfindingWikiData} />
       
       {/* Header Info */}
       <div className="mb-8 relative z-10 pointer-events-none">

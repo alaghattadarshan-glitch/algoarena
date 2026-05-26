@@ -3,7 +3,7 @@ import { useTreeStore } from '../store/useTreeStore';
 import TreeVisualizer from '../visualizers/TreeVisualizer';
 import { insertBSTNode, inOrderTraversal, preOrderTraversal, postOrderTraversal } from '../algorithms/treeAlgorithms';
 
-import InfoModal from './InfoModal';
+import AlgorithmWikiModal from './AlgorithmWikiModal';
 import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 
 const TreeArena = () => {
@@ -58,50 +58,100 @@ const TreeArena = () => {
     }
   };
 
-  const treeInfo = (
-    <div className="flex flex-col gap-6">
-      <div className="w-full rounded-2xl overflow-hidden border border-[#ff0080]/30 shadow-[0_0_30px_rgba(255,0,128,0.15)] relative">
-        <img src="/algoarena/img/tree_flowchart.png" alt="Tree Algorithm Diagram" className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
-      </div>
-
-      <div className="bg-black/40 border border-[#ff0080]/20 p-5 rounded-xl">
-        <h3 className="text-[#ff0080] font-bold text-lg mb-2 flex items-center gap-2"><Cpu className="w-5 h-5"/> Tree Data Structures</h3>
-        <p className="mb-3 text-gray-300">
-          Trees are hierarchical data structures consisting of "Nodes" connected by "Edges". Unlike arrays which are linear, trees branch out, allowing for complex relational mapping.
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>Binary Search Tree (BST):</strong> Organizes data mathematically so that the left child is always smaller than the parent, and the right child is larger. This enables $O(\log N)$ search times.</li>
-          <li><strong>Root & Leaves:</strong> The absolute top node is the "Root". Any node at the bottom without children is a "Leaf".</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-green-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-green-400 font-bold text-lg mb-2 flex items-center gap-2"><Lightbulb className="w-5 h-5"/> Recursive Traversals</h3>
-        <p className="mb-3 text-gray-300">
-          Because trees are not linear, you cannot just loop from 0 to N. You must use recursive logic to explore the branches.
-        </p>
-        <ul className="list-disc pl-5 space-y-2 text-gray-400">
-          <li><strong>In-Order (Left, Root, Right):</strong> Extremely powerful! When run on a BST, it retrieves all the data perfectly sorted in ascending order!</li>
-          <li><strong>Pre-Order (Root, Left, Right):</strong> Explores the parent before the children. Used to perfectly clone a tree or serialize it for storage.</li>
-          <li><strong>Post-Order (Left, Right, Root):</strong> Explores all the way to the leaves first. Used to safely delete a tree from the bottom up without creating memory leaks!</li>
-        </ul>
-      </div>
-
-      <div className="bg-black/40 border border-purple-500/20 p-5 rounded-xl mt-6">
-        <h3 className="text-purple-400 font-bold text-lg mb-2 flex items-center gap-2"><Globe2 className="w-5 h-5"/> Industry Applications</h3>
-        <ul className="list-disc pl-5 space-y-2 text-gray-300">
-          <li><strong>Web Browsers (DOM):</strong> The HTML on this very webpage is parsed and rendered as a "Document Object Model" Tree.</li>
-          <li><strong>File Systems:</strong> Your computer's folders and directories are mathematically represented as a Tree data structure.</li>
-          <li><strong>Machine Learning:</strong> Decision Trees and Random Forests use this architecture to classify data and make AI predictions.</li>
-        </ul>
-      </div>
-    </div>
-  );
+  const treeWikiData = [
+    {
+      id: 'bst-insert',
+      name: 'BST Insertion',
+      imagePath: '/algoarena/img/tree_flowchart.png',
+      imageAlt: 'BST Insertion Flowchart',
+      colorGradient: 'from-[#ff0080] to-purple-500',
+      borderColor: 'border-[#ff0080]/30',
+      imageExplanation: "This flowchart illustrates the core rule of Binary Search Trees. A new node enters at the root and compares itself. If it's smaller, it goes left. If larger, it goes right. It falls down the tree until it finds an empty spot to attach itself, permanently maintaining the perfectly sorted horizontal structure.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">To insert a new node into a Binary Search Tree, you begin at the root. You compare the new value with the current node's value. If it's less, you move to the left child; if it's greater, you move to the right child. You repeat this recursively until you hit a null pointer, where you insert the new node.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(log N) average case, but O(N) worst case if the tree becomes unbalanced (like a linked list).</li>
+            <li><strong>Space:</strong> O(log N) for the recursive call stack.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>BSTs form the foundation for more complex self-balancing trees like AVL and Red-Black trees, which are the backbone of almost every dictionary map (like C++ std::map) and database indexing system in the world.</p>
+        </>
+      )
+    },
+    {
+      id: 'in-order',
+      name: 'In-Order Traversal',
+      imagePath: '/algoarena/img/tree_flowchart.png',
+      imageAlt: 'In-Order Flowchart',
+      colorGradient: 'from-green-400 to-emerald-500',
+      borderColor: 'border-green-400/30',
+      imageExplanation: "This diagram traces the exact path of In-Order traversal: Left-Root-Right. By recursively diving down the far left branch first, the algorithm physically extracts the data in perfectly sorted, ascending numerical order.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">In-order traversal visits the left subtree, then the root node, and finally the right subtree. On a Binary Search Tree, this specific order of operations guarantees that every node is visited in ascending sorted order.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(N) because every node must be visited exactly once.</li>
+            <li><strong>Space:</strong> O(H) where H is the height of the tree, due to the recursive stack.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>In-order traversal is used whenever you need to 'flatten' a BST back into a sorted array, or when you need to print out the contents of a directory structure in alphabetical order.</p>
+        </>
+      )
+    },
+    {
+      id: 'pre-order',
+      name: 'Pre-Order Traversal',
+      imagePath: '/algoarena/img/tree_flowchart.png',
+      imageAlt: 'Pre-Order Flowchart',
+      colorGradient: 'from-blue-400 to-indigo-500',
+      borderColor: 'border-blue-400/30',
+      imageExplanation: "This diagram shows the Root-Left-Right pattern. The algorithm processes the current node immediately before diving into its children. This is perfect for making a structural clone of the tree because it reads the parents before the children.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Pre-order traversal visits the root node first, then recursively visits the left subtree, followed by the right subtree. It 'processes' the node before touching any of its descendants.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(N).</li>
+            <li><strong>Space:</strong> O(H) for the recursive stack.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Pre-order traversal is used to create a physical copy of a tree, or to serialize a tree into a flat string so it can be saved to a hard drive and accurately reconstructed later.</p>
+        </>
+      )
+    },
+    {
+      id: 'post-order',
+      name: 'Post-Order Traversal',
+      imagePath: '/algoarena/img/tree_flowchart.png',
+      imageAlt: 'Post-Order Flowchart',
+      colorGradient: 'from-orange-400 to-red-500',
+      borderColor: 'border-orange-400/30',
+      imageExplanation: "This diagram illustrates the Left-Right-Root pattern. It is a highly destructive traversal because it guarantees that a node's children are fully processed (or deleted) before the parent node itself is touched.",
+      detailedInfo: (
+        <>
+          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
+          <p className="mb-4">Post-order traversal recursively visits the left subtree, then the right subtree, and only processes the root node at the very end. This ensures we never process a node until all its children are completely finished.</p>
+          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
+          <ul className="list-disc pl-5 mb-4 space-y-1">
+            <li><strong>Time:</strong> O(N).</li>
+            <li><strong>Space:</strong> O(H) for the recursive stack.</li>
+          </ul>
+          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
+          <p>Post-order is the algorithm you use when deleting a tree from RAM. You cannot delete a parent node before deleting its children (otherwise you cause memory leaks). Post-order safely deletes the leaves, moving upward to the root.</p>
+        </>
+      )
+    }
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-10 relative">
-      <InfoModal title="The Science of Trees" content={treeInfo} />
+      <AlgorithmWikiModal title="Tree Algorithms Wiki" sections={treeWikiData} />
       
       {/* Header Info */}
       <div className="mb-8 relative z-10 pointer-events-none">
