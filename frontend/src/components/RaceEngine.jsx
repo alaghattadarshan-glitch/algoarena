@@ -19,10 +19,16 @@ const RaceEngine = () => {
           
           worker.onmessage = (e) => {
             const { type, payload } = e.data;
-            if (type === 'STEP') {
+            if (type === 'ERROR') {
+              alert(`Syntax Error in Custom Code IDE:\n\n${payload}`);
+              finishRace();
+              Object.values(workersRef.current).forEach(w => w.terminate());
+              workersRef.current = {};
+              clearInterval(intervalRef.current);
+            } else if (type === 'STEP') {
               const { algorithm, value, done, timeTaken } = payload;
               
-              if (done || value.sorted) {
+              if (done || value?.sorted) {
                  finishedStateRef.current[algorithm] = true;
                  updateMetric(algorithm, { ...value, finished: true, time: timeTaken });
                  
