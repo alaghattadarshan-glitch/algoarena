@@ -11,26 +11,44 @@ const ControlPanel = () => {
     soundEnabled, setSoundEnabled,
     geometryMode, setGeometryMode,
     timelineIndex, setTimelineIndex, maxTimelineLength,
-    debugMode, setDebugMode, triggerNextStep
+    debugMode, setDebugMode, triggerNextStep,
+    arrayType, customInput, setCustomInput
   } = useRaceStore();
 
   const availableAlgos = ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Quick Sort'];
 
-  const generateArray = (type = 'random') => {
+  const generateArray = (type = 'random', customVal = customInput) => {
     let newArr = [];
-    if (type === 'random') {
-      newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 5);
-    } else if (type === 'sorted') {
-      newArr = Array.from({ length: arraySize }, (_, i) => Math.floor((i/arraySize)*100) + 5);
-    } else if (type === 'reverse') {
-      newArr = Array.from({ length: arraySize }, (_, i) => Math.floor(((arraySize-i)/arraySize)*100) + 5);
+    if (type === 'custom') {
+      const numbers = customVal
+        .split(/[\s,]+/)
+        .map(x => parseInt(x.trim(), 10))
+        .filter(x => !isNaN(x));
+      if (numbers.length === 0) {
+        newArr = [10, 6, 7, 2, 3, 5, 9, 4, 1, 8];
+      } else {
+        newArr = numbers;
+      }
+      setArrayType('custom');
+      setArraySize(newArr.length);
+      setArray(newArr);
+    } else {
+      if (type === 'random') {
+        newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 5);
+      } else if (type === 'sorted') {
+        newArr = Array.from({ length: arraySize }, (_, i) => Math.floor((i/arraySize)*100) + 5);
+      } else if (type === 'reverse') {
+        newArr = Array.from({ length: arraySize }, (_, i) => Math.floor(((arraySize-i)/arraySize)*100) + 5);
+      }
+      setArrayType(type);
+      setArray(newArr);
     }
-    setArrayType(type);
-    setArray(newArr);
   };
 
   useEffect(() => {
-    generateArray('random');
+    if (arrayType !== 'custom') {
+      generateArray(arrayType);
+    }
   }, [arraySize]);
 
   return (
@@ -45,14 +63,14 @@ const ControlPanel = () => {
           </h3>
           <div>
             <div className="flex justify-between text-xs text-gray-400 mb-1">
-              <span>Input Size (Worker Optimized)</span>
+              <span>Input Size {arrayType === 'custom' && '(Custom)'}</span>
               <span className="text-[#00f3ff]">{arraySize}</span>
             </div>
             <input 
-              type="range" min="10" max="1000" value={arraySize}
+              type="range" min="5" max="1000" value={arraySize}
               onChange={(e) => setArraySize(Number(e.target.value))}
               className="w-full accent-[#00f3ff] bg-gray-800 rounded-lg appearance-none h-1"
-              disabled={raceStatus !== 'idle'}
+              disabled={raceStatus !== 'idle' || arrayType === 'custom'}
             />
           </div>
           <div>
@@ -98,11 +116,11 @@ const ControlPanel = () => {
             <div>
               <h3 className="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Geometry</h3>
               <div className="flex gap-2">
-                {['bars', 'scatter'].map(mode => (
+                {['bars', 'scatter', 'cards'].map(mode => (
                   <button 
                     key={mode}
                     onClick={() => setGeometryMode(mode)}
-                    className={`flex-1 py-1 rounded text-xs capitalize ${geometryMode === mode ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400'}`}
+                    className={`flex-1 py-1 rounded text-[10px] capitalize transition-all ${geometryMode === mode ? 'bg-purple-600 text-white font-bold shadow-[0_0_8px_rgba(147,51,234,0.5)]' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
                   >
                     {mode}
                   </button>
@@ -131,10 +149,51 @@ const ControlPanel = () => {
         {/* Actions */}
         <div className="flex flex-col gap-2 justify-end">
           <div className="flex gap-1 mb-1">
-            <button onClick={() => generateArray('random')} disabled={raceStatus !== 'idle'} className="flex-1 text-[10px] py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700">Random</button>
-            <button onClick={() => generateArray('sorted')} disabled={raceStatus !== 'idle'} className="flex-1 text-[10px] py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700">Sorted</button>
-            <button onClick={() => generateArray('reverse')} disabled={raceStatus !== 'idle'} className="flex-1 text-[10px] py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded border border-gray-700">Reverse</button>
+            <button 
+              onClick={() => generateArray('random')} 
+              disabled={raceStatus !== 'idle'} 
+              className={`flex-1 text-[10px] py-1.5 rounded border transition-all ${arrayType === 'random' ? 'bg-blue-600/30 text-blue-400 border-blue-500 font-bold' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700'}`}
+            >
+              Random
+            </button>
+            <button 
+              onClick={() => generateArray('sorted')} 
+              disabled={raceStatus !== 'idle'} 
+              className={`flex-1 text-[10px] py-1.5 rounded border transition-all ${arrayType === 'sorted' ? 'bg-blue-600/30 text-blue-400 border-blue-500 font-bold' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700'}`}
+            >
+              Sorted
+            </button>
+            <button 
+              onClick={() => generateArray('reverse')} 
+              disabled={raceStatus !== 'idle'} 
+              className={`flex-1 text-[10px] py-1.5 rounded border transition-all ${arrayType === 'reverse' ? 'bg-blue-600/30 text-blue-400 border-blue-500 font-bold' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700'}`}
+            >
+              Reverse
+            </button>
+            <button 
+              onClick={() => generateArray('custom')} 
+              disabled={raceStatus !== 'idle'} 
+              className={`flex-1 text-[10px] py-1.5 rounded border transition-all ${arrayType === 'custom' ? 'bg-[#00f3ff]/20 text-[#00f3ff] border-[#00f3ff] font-bold shadow-[0_0_8px_rgba(0,243,255,0.3)]' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700'}`}
+            >
+              Custom
+            </button>
           </div>
+          {arrayType === 'custom' && (
+            <div className="flex flex-col gap-1.5 mb-1 text-left">
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Custom Values (comma or space separated)</span>
+              <input 
+                type="text" 
+                placeholder="e.g. 10, 6, 7, 2, 3, 5, 9, 4, 1, 8" 
+                value={customInput}
+                disabled={raceStatus !== 'idle'}
+                onChange={(e) => {
+                  setCustomInput(e.target.value);
+                  generateArray('custom', e.target.value);
+                }}
+                className="w-full px-3 py-1.5 text-xs bg-black/60 border border-white/10 rounded-lg text-[#00f3ff] placeholder-gray-600 focus:outline-none focus:border-[#00f3ff] transition-all font-mono shadow-inner"
+              />
+            </div>
+          )}
           
           {raceStatus === 'idle' && (
             <motion.button 

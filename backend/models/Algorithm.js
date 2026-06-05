@@ -4,7 +4,9 @@ const algorithmSchema = new mongoose.Schema({
   name: { type: String, required: true },
   category: { type: String, required: true }, // Sorting, Searching, Graph, DP
   complexity: {
-    time: { type: String, required: true },
+    best: { type: String, required: true },
+    avg: { type: String, required: true },
+    worst: { type: String, required: true },
     space: { type: String, required: true }
   },
   description: { type: String, required: true },

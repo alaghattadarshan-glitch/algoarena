@@ -27,6 +27,7 @@ export const useRaceStore = create((set, get) => ({
   geometryMode: 'bars', // bars, scatter, spectrum
   timelineIndex: -1, // -1 means live/latest
   maxTimelineLength: 0,
+  customInput: '10, 6, 7, 2, 3, 5, 9, 4, 1, 8',
 
   setArraySize: (size) => set({ arraySize: size }),
   setSpeed: (speed) => set({ speed }),
@@ -38,6 +39,7 @@ export const useRaceStore = create((set, get) => ({
   setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
   setGeometryMode: (mode) => set({ geometryMode: mode }),
   setTimelineIndex: (index) => set({ timelineIndex: index }),
+  setCustomInput: (input) => set({ customInput: input }),
 
   setArray: (arr) => {
     const { algorithms } = get();

@@ -10,6 +10,7 @@ export function* bubbleSort(array) {
   let comparisons = 0, swaps = 0, n = arr.length;
   
   for (let i = 0; i < n; i++) {
+    let swapped = false;
     yield { arr: [...arr], active: [], comparisons, swaps, sorted: false, line: 0 };
     for (let j = 0; j < n - i - 1; j++) {
       comparisons++;
@@ -17,12 +18,14 @@ export function* bubbleSort(array) {
       
       if (arr[j] > arr[j + 1]) {
         swaps++;
+        swapped = true;
         let temp = arr[j];
         arr[j] = arr[j + 1];
         arr[j + 1] = temp;
         yield { arr: [...arr], active: [j, j+1], comparisons, swaps, sorted: false, line: 3, swappedValue: arr[j+1] };
       }
     }
+    if (!swapped) break;
   }
   yield { arr: [...arr], active: [], comparisons, swaps, sorted: true, line: null };
 }

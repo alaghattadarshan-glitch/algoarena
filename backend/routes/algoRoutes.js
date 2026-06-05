@@ -19,7 +19,12 @@ router.post('/seed', async (req, res) => {
       {
         name: 'Bubble Sort',
         category: 'Sorting',
-        complexity: { time: 'O(n^2)', space: 'O(1)' },
+        complexity: {
+          best: 'O(n)',
+          avg: 'O(n^2)',
+          worst: 'O(n^2)',
+          space: 'O(1)'
+        },
         description: 'Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.',
         pseudocode: 'for i from 0 to n: for j from 0 to n-i-1: if arr[j] > arr[j+1] swap(arr[j], arr[j+1])',
         implementations: {
@@ -31,7 +36,12 @@ router.post('/seed', async (req, res) => {
       {
         name: 'Quick Sort',
         category: 'Sorting',
-        complexity: { time: 'O(n log n)', space: 'O(log n)' },
+        complexity: {
+          best: 'O(n log n)',
+          avg: 'O(n log n)',
+          worst: 'O(n^2)',
+          space: 'O(log n)'
+        },
         description: 'Picks an element as pivot and partitions the given array around the picked pivot.',
         pseudocode: 'quickSort(arr, low, high) { if (low < high) { pi = partition(arr, low, high); quickSort(arr, low, pi - 1); quickSort(arr, pi + 1, high); } }',
         implementations: {
