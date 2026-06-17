@@ -7,7 +7,8 @@ import RaceEngine from './components/RaceEngine';
 import AIAnalyst from './components/AIAnalyst';
 import PathfindingArena from './components/PathfindingArena';
 import TreeArena from './components/TreeArena';
-import DPArena from './components/DPArena';
+import ParticleBackground from './components/ParticleBackground';
+
 import { useRaceStore } from './store/useRaceStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -37,22 +38,13 @@ function App() {
         >
           Tree Arena
         </button>
-        <button 
-          onClick={() => setArenaMode('dp')}
-          className={`font-black tracking-widest uppercase transition-colors text-sm ${arenaMode === 'dp' ? 'text-[#ffae00] drop-shadow-[0_0_10px_#ffae00]' : 'text-gray-500 hover:text-white'}`}
-        >
-          DP Matrix
-        </button>
+
       </div>
 
       <RaceEngine />
       
-      {/* Global Background Effects */}
-      <div className="fixed inset-0 pointer-events-none z-0 mt-16">
-         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px]"></div>
-         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px]"></div>
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 mix-blend-overlay"></div>
-      </div>
+      {/* 3D Dynamic Particle Background (CC Particle World style) */}
+      <ParticleBackground arenaMode={arenaMode} />
 
       <div className="relative z-10 pt-20">
         
@@ -109,9 +101,7 @@ function App() {
           <TreeArena />
         )}
 
-        {arenaMode === 'dp' && (
-          <DPArena />
-        )}
+
 
       </div>
     </div>

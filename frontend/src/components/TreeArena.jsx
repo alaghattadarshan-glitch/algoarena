@@ -2,13 +2,65 @@ import React, { useState } from 'react';
 import { useTreeStore } from '../store/useTreeStore';
 import TreeVisualizer from '../visualizers/TreeVisualizer';
 import { insertBSTNode, inOrderTraversal, preOrderTraversal, postOrderTraversal } from '../algorithms/treeAlgorithms';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
 import AlgorithmWikiModal from './AlgorithmWikiModal';
 import { Cpu, Globe2, Lightbulb } from 'lucide-react';
 
+const TREE_ALGO_COMPLEXITY = {
+  'BST Insertion': {
+    best: 'O(log N)',
+    avg: 'O(log N)',
+    worst: 'O(N)',
+    space: 'O(log N)',
+    tooltip: 'Traverses down comparing values. Time complexity depends heavily on tree balance.'
+  },
+  'In-Order Traversal': {
+    best: 'O(N)',
+    avg: 'O(N)',
+    worst: 'O(N)',
+    space: 'O(H)',
+    tooltip: 'Visits Left-Root-Right. Standard way to retrieve sorted keys in ascending order.'
+  },
+  'Pre-Order Traversal': {
+    best: 'O(N)',
+    avg: 'O(N)',
+    worst: 'O(N)',
+    space: 'O(H)',
+    tooltip: 'Visits Root-Left-Right. Excellent for copying, cloning or serializing trees.'
+  },
+  'Post-Order Traversal': {
+    best: 'O(N)',
+    avg: 'O(N)',
+    worst: 'O(N)',
+    space: 'O(H)',
+    tooltip: 'Visits Left-Right-Root. Essential for safely deleting/deallocating parent-child nodes.'
+  }
+};
+
+const evaluateTreeComplexity = (notation, n) => {
+  const clean = notation.toLowerCase().replace(/\s/g, '');
+  if (clean.includes('logn')) return Math.log2(n);
+  if (clean.includes('h')) return Math.log2(n); // Height of balanced tree is log N
+  return n; // linear O(N)
+};
+
+const generateTreeComplexityData = (comp) => {
+  const data = [];
+  for (let n = 2; n <= 16; n += 2) {
+    data.push({
+      name: `N=${n}`,
+      'Time Complexity': evaluateTreeComplexity(comp.avg || comp.best, n),
+      'Space Complexity': evaluateTreeComplexity(comp.space, n)
+    });
+  }
+  return data;
+};
+
 const TreeArena = () => {
   const { nodes, clearTree, speed, setSpeed, traversalOutput } = useTreeStore();
   const [inputValue, setInputValue] = useState('');
+  const [selectedTreeAlgo, setSelectedTreeAlgo] = useState('BST Insertion');
 
   const handleInsert = async (e) => {
     e.preventDefault();
@@ -245,6 +297,65 @@ const TreeArena = () => {
           </div>
         </div>
       )}
+
+      {/* Tree Complexity Analysis Card */}
+      {(() => {
+        const treeComp = TREE_ALGO_COMPLEXITY[selectedTreeAlgo];
+        return (
+          <div className="glass-panel p-5 rounded-2xl w-full mx-auto mb-8 border border-[#ff0080]/30 z-10 relative flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col w-full md:w-1/3 gap-3">
+              <h3 className="text-sm font-bold text-[#ff0080] uppercase tracking-wider">Complexity Reference</h3>
+              <div className="grid grid-cols-2 gap-1.5">
+                {Object.keys(TREE_ALGO_COMPLEXITY).map(algo => (
+                  <button
+                    key={algo}
+                    onClick={() => setSelectedTreeAlgo(algo)}
+                    className={`py-1.5 px-2 rounded text-[10px] font-bold uppercase transition ${selectedTreeAlgo === algo ? 'bg-[#ff0080] text-white shadow-[0_0_10px_rgba(255,0,128,0.4)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                  >
+                    {algo === 'BST Insertion' ? 'Insertion' : algo.replace(' Traversal', '')}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="text-[10px] text-gray-400 font-mono leading-relaxed mt-1">
+                <span className="text-gray-500 block uppercase font-bold mb-1">Behavior</span>
+                {treeComp.tooltip}
+              </div>
+            </div>
+
+            <div className="flex flex-col w-full md:w-2/3 h-44 relative">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[10px] text-gray-400 font-mono">
+                  Selected: <span className="text-[#ff0080] font-black">{selectedTreeAlgo}</span>
+                </span>
+                <div className="flex gap-3 text-[9px] font-mono">
+                  <div>Best: <span className="text-[#00f3ff] font-bold">{treeComp.best}</span></div>
+                  <div>Avg: <span className="text-[#ffae00] font-bold">{treeComp.avg}</span></div>
+                  <div>Worst: <span className="text-[#ff0055] font-bold">{treeComp.worst}</span></div>
+                  <div>Space: <span className="text-[#10b981] font-bold">{treeComp.space}</span></div>
+                </div>
+              </div>
+              
+              <div className="flex-1 bg-black/40 rounded border border-white/5 p-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={generateTreeComplexityData(treeComp)} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="name" stroke="#888" style={{ fontSize: 8 }} />
+                    <YAxis stroke="#888" style={{ fontSize: 8 }} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#0a0a0a', borderColor: '#222', fontSize: 9 }}
+                      itemStyle={{ padding: 0 }}
+                    />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: 8 }} />
+                    <Line type="monotone" dataKey="Time Complexity" stroke="#00f3ff" strokeWidth={1.5} dot={false} />
+                    <Line type="monotone" dataKey="Space Complexity" stroke="#10b981" strokeWidth={1.5} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Visualizer Canvas */}
       <div className="bg-[#050505] rounded-2xl border border-white/10 w-full h-[600px] relative overflow-hidden flex items-center justify-center mb-12">

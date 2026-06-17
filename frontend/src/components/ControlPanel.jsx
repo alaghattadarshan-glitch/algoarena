@@ -115,14 +115,14 @@ const ControlPanel = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Geometry</h3>
-              <div className="flex gap-2">
-                {['bars', 'scatter', 'cards'].map(mode => (
+              <div className="flex flex-wrap gap-1.5">
+                {['bars', '3d-bars', 'scatter', 'cards'].map(mode => (
                   <button 
                     key={mode}
                     onClick={() => setGeometryMode(mode)}
-                    className={`flex-1 py-1 rounded text-[10px] capitalize transition-all ${geometryMode === mode ? 'bg-purple-600 text-white font-bold shadow-[0_0_8px_rgba(147,51,234,0.5)]' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                    className={`flex-1 min-w-[52px] py-1 rounded text-[10px] capitalize transition-all ${geometryMode === mode ? 'bg-purple-600 text-white font-bold shadow-[0_0_8px_rgba(147,51,234,0.5)]' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
                   >
-                    {mode}
+                    {mode === '3d-bars' ? '3D Bars' : mode}
                   </button>
                 ))}
               </div>

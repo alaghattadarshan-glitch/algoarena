@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { useGraphStore } from '../store/useGraphStore';
 import { graphAlgorithmsMap } from '../algorithms/pathfinding';
-import { LineChart, Line, ResponsiveContainer, ReferenceDot } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
-const generateCurveData = (curve, currentSize) => {
+const evaluateGraphComplexity = (notation, n) => {
+  const clean = notation.toLowerCase().replace(/\s/g, '');
+  if (clean.includes('v+e') || clean.includes('e')) return n * 1.2;
+  if (clean.includes('log')) return n * Math.log2(n) * 0.1;
+  if (clean.includes('v^2') || clean.includes('v²')) return n * n * 0.01;
+  if (clean.includes('v^(d/2)')) return Math.sqrt(n) * 2;
+  return n;
+};
+
+const generateGraphComplexityData = (comp, maxNodes) => {
   const data = [];
-  const max = Math.max(100, currentSize * 1.5);
-  const step = Math.ceil(max / 20);
-  for (let i = 10; i <= max; i += step) {
-    let val;
-    if (curve === 'quadratic') val = i * i;
-    else if (curve === 'loglinear') val = i * Math.log2(i);
-    else val = i; // linear
-    data.push({ x: i, y: val });
+  const step = Math.ceil(maxNodes / 10);
+  for (let n = 10; n <= maxNodes; n += step) {
+    data.push({
+      name: `V=${n}`,
+      'Time Complexity': evaluateGraphComplexity(comp.time, n),
+      'Space Complexity': evaluateGraphComplexity(comp.space, n)
+    });
   }
   return data;
 };
@@ -26,7 +34,10 @@ const getComplexityColor = (complexity) => {
 };
 
 const GraphGrid = ({ algorithm, index }) => {
-  const { grid, startNode, endNode, walls, toggleWall, raceStatus, metrics } = useGraphStore();
+  const { 
+    grid, startNode, endNode, walls, toggleWall, raceStatus, metrics,
+    clickTool, setStartNode, setEndNode
+  } = useGraphStore();
   const [isMousePressed, setIsMousePressed] = useState(false);
 
   const metric = metrics[algorithm] || { visitedNodes: [], path: [], finished: false, time: 0 };
@@ -34,20 +45,28 @@ const GraphGrid = ({ algorithm, index }) => {
   const complexity = graphAlgorithmsMap[algorithm].complexity;
   
   const totalNodes = grid.length * grid[0].length;
-  const curveData = generateCurveData(complexity.curve || 'linear', totalNodes);
-  let currentY = totalNodes;
-  if (complexity.curve === 'quadratic') currentY = totalNodes * totalNodes;
-  if (complexity.curve === 'loglinear') currentY = totalNodes * Math.log2(totalNodes);
 
   const handleMouseDown = (row, col) => {
     if (raceStatus !== 'idle') return;
     setIsMousePressed(true);
-    toggleWall(row, col);
+    if (clickTool === 'start') {
+      setStartNode(row, col);
+    } else if (clickTool === 'end') {
+      setEndNode(row, col);
+    } else {
+      toggleWall(row, col);
+    }
   };
 
   const handleMouseEnter = (row, col) => {
     if (raceStatus !== 'idle' || !isMousePressed) return;
-    toggleWall(row, col);
+    if (clickTool === 'start') {
+      setStartNode(row, col);
+    } else if (clickTool === 'end') {
+      setEndNode(row, col);
+    } else {
+      toggleWall(row, col);
+    }
   };
 
   const handleMouseUp = () => {
@@ -173,9 +192,16 @@ const GraphGrid = ({ algorithm, index }) => {
           <div className="flex-1 bg-black/40 rounded border border-white/5 relative min-h-[50px]">
             <div className="absolute inset-0">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={curveData}>
-                  <Line type="monotone" dataKey="y" stroke="#00f3ff" strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <ReferenceDot x={totalNodes} y={currentY} r={4} fill="#00ff88" stroke="#fff" strokeWidth={1} isFront={true} />
+                <LineChart data={generateGraphComplexityData(complexity, totalNodes)} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="name" stroke="#888" style={{ fontSize: 7 }} />
+                  <YAxis stroke="#888" style={{ fontSize: 7 }} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#0a0a0a', borderColor: '#222', fontSize: 8 }}
+                    itemStyle={{ padding: 0 }}
+                  />
+                  <Line type="monotone" dataKey="Time Complexity" stroke="#00f3ff" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="Space Complexity" stroke="#10b981" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
