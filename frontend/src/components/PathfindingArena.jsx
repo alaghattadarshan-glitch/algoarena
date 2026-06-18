@@ -11,10 +11,11 @@ const PathfindingArena = () => {
     initializeGrid, algorithms, toggleAlgorithm, clearWalls, generateMaze,
     speed, setSpeed, raceStatus, startRace, resetRace, winner,
     rows, cols, startNode, endNode, clickTool, setClickTool, setRows, setCols,
-    setStartNode, setEndNode, setCustomWallsFromText
+    setStartNode, setEndNode, setWallPreset, setNodePreset, setCustomWallsFromText,
+    walls
   } = useGraphStore();
 
-  const [wallsTextInput, setWallsTextInput] = useState('');
+  const [wallsInput, setWallsInput] = useState('');
 
   useEffect(() => {
     initializeGrid();
@@ -230,44 +231,130 @@ const PathfindingArena = () => {
         <div className="border-t border-[#9d00ff]/20 pt-6 mt-6">
           <h3 className="text-md font-bold text-white mb-4 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00f3ff] animate-pulse"></span>
-            Custom Arena Data
+            Arena Settings & Custom Data
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             {/* Click Interaction Tool */}
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mouse Click Mode</span>
-              <div className="flex flex-col gap-1.5 mt-1">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">1. Mouse Mode</span>
+              <div className="flex flex-col gap-2 mt-1">
                 <button 
                   onClick={() => setClickTool('wall')}
                   disabled={raceStatus !== 'idle'}
-                  className={`px-3 py-2 rounded text-xs font-bold flex items-center gap-2 transition ${clickTool === 'wall' ? 'bg-[#9d00ff] text-white shadow-[0_0_10px_#9d00ff]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                  className={`w-full px-3 py-2 rounded text-xs font-bold flex items-center justify-center gap-2 transition ${clickTool === 'wall' ? 'bg-[#9d00ff] text-white shadow-[0_0_10px_#9d00ff]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
                 >
                   🧱 Draw Walls
                 </button>
                 <button 
                   onClick={() => setClickTool('start')}
                   disabled={raceStatus !== 'idle'}
-                  className={`px-3 py-2 rounded text-xs font-bold flex items-center gap-2 transition ${clickTool === 'start' ? 'bg-[#00f3ff] text-black shadow-[0_0_10px_#00f3ff]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                  className={`w-full px-3 py-2 rounded text-xs font-bold flex items-center justify-center gap-2 transition ${clickTool === 'start' ? 'bg-[#00f3ff] text-black shadow-[0_0_10px_#00f3ff]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
                 >
                   🟢 Set Start Node
                 </button>
                 <button 
                   onClick={() => setClickTool('end')}
                   disabled={raceStatus !== 'idle'}
-                  className={`px-3 py-2 rounded text-xs font-bold flex items-center gap-2 transition ${clickTool === 'end' ? 'bg-[#ff003c] text-white shadow-[0_0_10px_#ff003c]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                  className={`w-full px-3 py-2 rounded text-xs font-bold flex items-center justify-center gap-2 transition ${clickTool === 'end' ? 'bg-[#ff003c] text-white shadow-[0_0_10px_#ff003c]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
                 >
                   🔴 Set End Node
                 </button>
               </div>
             </div>
 
-            {/* Grid Size Parameters */}
+            {/* Start / End Presets */}
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Grid Dimensions</span>
-              <div className="flex flex-col gap-3 mt-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">Rows (5-30)</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">2. Node Placements</span>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <button 
+                  onClick={() => setNodePreset('left-right')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-2 rounded text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition flex flex-col items-center gap-1"
+                >
+                  <span>↔️</span>
+                  <span>Left-Right</span>
+                </button>
+                <button 
+                  onClick={() => setNodePreset('top-bottom')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-2 rounded text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition flex flex-col items-center gap-1"
+                >
+                  <span>↕️</span>
+                  <span>Top-Bottom</span>
+                </button>
+                <button 
+                  onClick={() => setNodePreset('diagonal')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-2 rounded text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition flex flex-col items-center gap-1"
+                >
+                  <span>↗️</span>
+                  <span>Diagonal</span>
+                </button>
+                <button 
+                  onClick={() => setNodePreset('center-corner')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-2 rounded text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition flex flex-col items-center gap-1"
+                >
+                  <span>🎯</span>
+                  <span>Center-Corner</span>
+                </button>
+              </div>
+              <div className="text-[10px] text-gray-500 font-mono mt-1 text-center">
+                Start: ({startNode.row},{startNode.col}) | End: ({endNode.row},{endNode.col})
+              </div>
+            </div>
+
+            {/* Wall Presets */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">3. Wall Layout Presets</span>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <button 
+                  onClick={() => setWallPreset('spiral')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-1.5 rounded text-[11px] font-bold bg-[#9d00ff]/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/25 transition"
+                >
+                  🌀 Spiral
+                </button>
+                <button 
+                  onClick={() => setWallPreset('slit')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-1.5 rounded text-[11px] font-bold bg-[#9d00ff]/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/25 transition"
+                >
+                  🚪 Slit Wall
+                </button>
+                <button 
+                  onClick={() => setWallPreset('cross')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-1.5 rounded text-[11px] font-bold bg-[#9d00ff]/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/25 transition"
+                >
+                  ➕ Cross
+                </button>
+                <button 
+                  onClick={() => setWallPreset('checkerboard')}
+                  disabled={raceStatus !== 'idle'}
+                  className="px-2 py-1.5 rounded text-[11px] font-bold bg-[#9d00ff]/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/25 transition"
+                >
+                  🏁 Grid
+                </button>
+                <button 
+                  onClick={() => setWallPreset('random')}
+                  disabled={raceStatus !== 'idle'}
+                  className="col-span-2 px-2 py-1.5 rounded text-[11px] font-bold bg-[#be7bff]/20 text-[#be7bff] border border-[#9d00ff]/30 hover:bg-[#be7bff]/30 transition"
+                >
+                  🎲 Random Scattered (25%)
+                </button>
+              </div>
+            </div>
+
+            {/* Grid Size and Custom Wall text coordinates */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">4. Dimensions & Manual Input</span>
+              
+              {/* Rows and Cols */}
+              <div className="flex gap-2 mt-1">
+                <div className="flex-1 flex items-center justify-between bg-white/5 border border-white/10 rounded px-2.5 py-1">
+                  <span className="text-[10px] text-gray-400">Rows</span>
                   <input 
                     type="number" 
                     min="5" 
@@ -278,11 +365,11 @@ const PathfindingArena = () => {
                       const val = Number(e.target.value);
                       if (val >= 5 && val <= 30) setRows(val);
                     }}
-                    className="bg-black/60 border border-purple-500/30 rounded px-2 py-1 text-white text-xs w-20 outline-none focus:border-[#9d00ff]"
+                    className="bg-black/60 border border-purple-500/30 rounded px-1.5 py-0.5 text-white text-[11px] w-10 text-center outline-none focus:border-[#9d00ff]"
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">Cols (5-60)</span>
+                <div className="flex-1 flex items-center justify-between bg-white/5 border border-white/10 rounded px-2.5 py-1">
+                  <span className="text-[10px] text-gray-400">Cols</span>
                   <input 
                     type="number" 
                     min="5" 
@@ -293,86 +380,43 @@ const PathfindingArena = () => {
                       const val = Number(e.target.value);
                       if (val >= 5 && val <= 60) setCols(val);
                     }}
-                    className="bg-black/60 border border-[#9d00ff]/30 rounded px-2 py-1 text-white text-xs w-20 outline-none focus:border-[#9d00ff]"
+                    className="bg-black/60 border border-[#9d00ff]/30 rounded px-1.5 py-0.5 text-white text-[11px] w-10 text-center outline-none focus:border-[#9d00ff]"
                   />
                 </div>
               </div>
-            </div>
 
-            {/* Node Positions */}
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Node Coordinates</span>
-              <div className="flex flex-col gap-3 mt-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 flex items-center gap-1">🟢 Start (Row, Col)</span>
-                  <div className="flex gap-1">
-                    <input 
-                      type="number" 
-                      min="0" 
-                      max={rows - 1} 
-                      value={startNode.row}
-                      disabled={raceStatus !== 'idle'}
-                      onChange={(e) => setStartNode(Number(e.target.value), startNode.col)}
-                      className="bg-black/60 border border-[#9d00ff]/30 rounded px-1 py-1 text-white text-xs w-10 text-center outline-none focus:border-[#9d00ff]"
-                    />
-                    <input 
-                      type="number" 
-                      min="0" 
-                      max={cols - 1} 
-                      value={startNode.col}
-                      disabled={raceStatus !== 'idle'}
-                      onChange={(e) => setStartNode(startNode.row, Number(e.target.value))}
-                      className="bg-black/60 border border-[#9d00ff]/30 rounded px-1 py-1 text-white text-xs w-10 text-center outline-none focus:border-[#9d00ff]"
-                    />
-                  </div>
+              {/* Coordinates input */}
+              <div className="flex flex-col gap-1.5 mt-1">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-gray-400 font-semibold">Custom Walls Input</span>
+                  <span className="text-[#00f3ff] bg-[#00f3ff]/10 px-1.5 py-0.5 rounded font-mono font-bold">
+                    Walls: {walls.size}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 flex items-center gap-1">🔴 End (Row, Col)</span>
-                  <div className="flex gap-1">
-                    <input 
-                      type="number" 
-                      min="0" 
-                      max={rows - 1} 
-                      value={endNode.row}
-                      disabled={raceStatus !== 'idle'}
-                      onChange={(e) => setEndNode(Number(e.target.value), endNode.col)}
-                      className="bg-black/60 border border-[#9d00ff]/30 rounded px-1 py-1 text-white text-xs w-10 text-center outline-none focus:border-[#9d00ff]"
-                    />
-                    <input 
-                      type="number" 
-                      min="0" 
-                      max={cols - 1} 
-                      value={endNode.col}
-                      disabled={raceStatus !== 'idle'}
-                      onChange={(e) => setEndNode(endNode.row, Number(e.target.value))}
-                      className="bg-black/60 border border-[#9d00ff]/30 rounded px-1 py-1 text-white text-xs w-10 text-center outline-none focus:border-[#9d00ff]"
-                    />
-                  </div>
+                <div className="flex gap-1">
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 2,3 4,5 or 3-4, 5-6"
+                    value={wallsInput}
+                    disabled={raceStatus !== 'idle'}
+                    onChange={(e) => {
+                      setWallsInput(e.target.value);
+                      setCustomWallsFromText(e.target.value);
+                    }}
+                    className="flex-1 min-w-0 bg-black/60 border border-purple-500/20 rounded px-2 py-1 text-white text-xs outline-none focus:border-[#9d00ff] font-mono placeholder-gray-600"
+                  />
+                  {walls.size > 0 && (
+                    <button
+                      onClick={() => {
+                        clearWalls();
+                        setWallsInput('');
+                      }}
+                      className="px-2 py-1 rounded text-xs bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/40 transition font-bold"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
-              </div>
-            </div>
-
-            {/* Manual Wall Pasting */}
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Manual Wall Coordinates</span>
-              <div className="flex flex-col gap-2 mt-1">
-                <input 
-                  type="text" 
-                  value={wallsTextInput}
-                  disabled={raceStatus !== 'idle'}
-                  onChange={(e) => setWallsTextInput(e.target.value)}
-                  placeholder="e.g. (2,3), (4,5) or 3-4, 5-6"
-                  className="bg-black/60 border border-purple-500/20 rounded px-2 py-1.5 text-white text-xs outline-none focus:border-[#9d00ff]"
-                />
-                <button 
-                  onClick={() => {
-                    setCustomWallsFromText(wallsTextInput);
-                  }}
-                  disabled={raceStatus !== 'idle'}
-                  className="w-full py-1.5 rounded text-xs font-bold bg-[#9d00ff]/20 text-[#be7bff] border border-[#9d00ff]/30 hover:bg-[#9d00ff]/40 transition"
-                >
-                  Apply Custom Walls
-                </button>
               </div>
             </div>
 

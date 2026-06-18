@@ -138,6 +138,91 @@ export const useGraphStore = create((set, get) => ({
     }
     set({ walls: newWalls, metrics: {}, raceStatus: 'idle', winner: null });
   },
+
+  setWallPreset: (type) => {
+    const { rows, cols, startNode, endNode } = get();
+    const newWalls = new Set();
+    
+    const isReserved = (r, c) => {
+      return (r === startNode.row && c === startNode.col) || (r === endNode.row && c === endNode.col);
+    };
+
+    if (type === 'spiral') {
+      let top = 1, bottom = rows - 2;
+      let left = 2, right = cols - 3;
+      let count = 0;
+      while (top <= bottom && left <= right) {
+        if (count % 2 === 0) {
+          for (let i = left; i <= right; i++) { if (!isReserved(top, i)) newWalls.add(`${top}-${i}`); }
+          for (let i = top; i <= bottom; i++) { if (!isReserved(i, right)) newWalls.add(`${i}-${right}`); }
+          for (let i = right; i >= left; i--) { if (!isReserved(bottom, i)) newWalls.add(`${bottom}-${i}`); }
+          for (let i = bottom; i >= top; i--) { if (!isReserved(i, left)) newWalls.add(`${i}-${left}`); }
+        }
+        top += 2; bottom -= 2;
+        left += 4; right -= 4;
+        count++;
+      }
+    } else if (type === 'checkerboard') {
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if ((r + c) % 4 === 0 && !isReserved(r, c)) {
+            newWalls.add(`${r}-${c}`);
+          }
+        }
+      }
+    } else if (type === 'random') {
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (Math.random() < 0.25 && !isReserved(r, c)) {
+            newWalls.add(`${r}-${c}`);
+          }
+        }
+      }
+    } else if (type === 'slit') {
+      const midCol = Math.floor(cols / 2);
+      for (let r = 0; r < rows; r++) {
+        if (r !== Math.floor(rows / 3) && r !== Math.floor(2 * rows / 3)) {
+          if (!isReserved(r, midCol)) newWalls.add(`${r}-${midCol}`);
+        }
+      }
+    } else if (type === 'cross') {
+      const midRow = Math.floor(rows / 2);
+      const midCol = Math.floor(cols / 2);
+      for (let c = 0; c < cols; c++) {
+        if (Math.abs(c - midCol) > 4 && !isReserved(midRow, c)) newWalls.add(`${midRow}-${c}`);
+      }
+      for (let r = 0; r < rows; r++) {
+        if (Math.abs(r - midRow) > 2 && !isReserved(r, midCol)) newWalls.add(`${r}-${midCol}`);
+      }
+    }
+    set({ walls: newWalls, metrics: {}, raceStatus: 'idle', winner: null });
+  },
+
+  setNodePreset: (type) => {
+    const { rows, cols } = get();
+    let startNode = { row: 10, col: 5 };
+    let endNode = { row: 10, col: 44 };
+
+    if (type === 'left-right') {
+      startNode = { row: Math.floor(rows / 2), col: Math.max(1, Math.floor(cols * 0.1)) };
+      endNode = { row: Math.floor(rows / 2), col: Math.min(cols - 2, Math.floor(cols * 0.9)) };
+    } else if (type === 'top-bottom') {
+      startNode = { row: 1, col: Math.floor(cols / 2) };
+      endNode = { row: rows - 2, col: Math.floor(cols / 2) };
+    } else if (type === 'diagonal') {
+      startNode = { row: 2, col: 2 };
+      endNode = { row: rows - 3, col: cols - 3 };
+    } else if (type === 'center-corner') {
+      startNode = { row: Math.floor(rows / 2), col: Math.floor(cols / 2) };
+      endNode = { row: rows - 2, col: cols - 2 };
+    }
+
+    const walls = new Set(get().walls);
+    walls.delete(`${startNode.row}-${startNode.col}`);
+    walls.delete(`${endNode.row}-${endNode.col}`);
+
+    set({ startNode, endNode, walls, metrics: {}, raceStatus: 'idle', winner: null });
+  },
   
   toggleWall: (row, col) => {
     const walls = new Set(get().walls);
