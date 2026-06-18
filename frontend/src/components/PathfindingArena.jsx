@@ -137,7 +137,7 @@ const PathfindingArena = () => {
                 <span className="text-[#9d00ff]">{speed}</span>
               </div>
               <input 
-                type="range" min="10" max="1000" value={speed}
+                type="range" min="1" max="1000" value={speed}
                 onChange={(e) => setSpeed(Number(e.target.value))}
                 className="w-full accent-[#9d00ff] bg-gray-800 rounded-lg appearance-none h-1"
               />

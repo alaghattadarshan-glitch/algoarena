@@ -79,7 +79,7 @@ const ControlPanel = () => {
               <span className="text-[#9d00ff]">{speed}</span>
             </div>
             <input 
-              type="range" min="10" max="1000" value={speed}
+              type="range" min="1" max="1000" value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
               disabled={debugMode}
               className={`w-full accent-[#9d00ff] rounded-lg appearance-none h-1 ${debugMode ? 'bg-gray-900 opacity-50' : 'bg-gray-800'}`}
