@@ -20,7 +20,7 @@ const PathfindingArena = () => {
     initializeGrid();
   }, [initializeGrid]);
 
-  const availableAlgos = ['BFS', 'DFS', 'Dijkstra', 'A* Search', 'Greedy Best-First', 'Bidirectional Swarm'];
+  const availableAlgos = ['BFS', 'DFS', 'Dijkstra', 'A* Search'];
 
   const pathfindingWikiData = [
     {
@@ -108,50 +108,6 @@ const PathfindingArena = () => {
           </ul>
           <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
           <p>A* is the undisputed king of Video Game AI. Almost every unit moving in a modern Strategy game (like StarCraft or Age of Empires) uses A* to navigate complex terrain while avoiding dynamic obstacles.</p>
-        </>
-      )
-    },
-    {
-      id: 'greedy',
-      name: 'Greedy Best-First Search',
-      imagePath: '/algoarena/img/greedy_flow.png',
-      imageAlt: 'Greedy Flowchart',
-      colorGradient: 'from-red-500 to-yellow-500',
-      borderColor: 'border-red-500/30',
-      imageExplanation: "This diagram illustrates the danger of being 'greedy'. The algorithm ignores the G-cost (how far it has traveled) and only looks at the H-cost (how close it looks to the goal). It sprints blindly toward the target, often getting trapped in dead-ends or finding sub-optimal zigzag paths.",
-      detailedInfo: (
-        <>
-          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
-          <p className="mb-4">Greedy Best-First explores the graph by expanding the most promising node chosen according to a specified rule. It uses only a heuristic function f(n) = h(n) to estimate the cost to the goal, completely ignoring the cost already incurred.</p>
-          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
-          <ul className="list-disc pl-5 mb-4 space-y-1">
-            <li><strong>Time:</strong> O(b^m) worst case.</li>
-            <li><strong>Space:</strong> O(b^m) worst case.</li>
-          </ul>
-          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
-          <p>Greedy is used when speed is absolutely critical and finding the mathematical 'best' path doesn't matter (e.g., real-time enemy AI swarming the player in a fast-paced shooter). It is incredibly fast, but does not guarantee the shortest path.</p>
-        </>
-      )
-    },
-    {
-      id: 'bidirectional',
-      name: 'Bidirectional Swarm',
-      imagePath: '/algoarena/img/pathfinding_flowchart.png',
-      imageAlt: 'Bidirectional Swarm Flowchart',
-      colorGradient: 'from-fuchsia-500 to-indigo-500',
-      borderColor: 'border-fuchsia-500/30',
-      imageExplanation: "This diagram shows a pincer maneuver. Two separate search algorithms (like BFS or A*) launch simultaneously—one from the Start Node, and one from the End Node. When the two frontiers collide in the middle, the paths are fused together.",
-      detailedInfo: (
-        <>
-          <h4 className="text-xl font-bold text-white mb-2">How It Works</h4>
-          <p className="mb-4">Bidirectional search runs two simultaneous searches: one forward from the initial state and the other backward from the goal. It replaces a single massive search graph with two much smaller sub-graphs that meet in the middle.</p>
-          <h4 className="text-xl font-bold text-white mb-2">Complexity</h4>
-          <ul className="list-disc pl-5 mb-4 space-y-1">
-            <li><strong>Time:</strong> O(b^(d/2)). This is a massive optimization over O(b^d).</li>
-            <li><strong>Space:</strong> O(b^(d/2)).</li>
-          </ul>
-          <h4 className="text-xl font-bold text-white mb-2">Real World Use Cases</h4>
-          <p>Used heavily in massive social network analysis (like checking the 'Degrees of Separation' between two LinkedIn users) where a standard BFS would quickly run out of memory trying to search billions of nodes.</p>
         </>
       )
     }
