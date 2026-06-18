@@ -2,7 +2,7 @@ import { graphAlgorithmsMap } from '../algorithms/pathfinding';
 
 let generator = null;
 let algorithmName = '';
-let startTime = 0;
+let accumulatedTime = 0;
 
 self.onmessage = (e) => {
   const { type, payload } = e.data;
@@ -13,13 +13,15 @@ self.onmessage = (e) => {
     const wallsSet = new Set(wallsArray);
     
     generator = graphAlgorithmsMap[algorithmName].generator(rows, cols, startNode, endNode, wallsSet);
-    startTime = performance.now();
+    accumulatedTime = 0;
     self.postMessage({ type: 'INIT_DONE' });
   } 
   else if (type === 'TICK') {
     if (!generator) return;
     
+    const t0 = performance.now();
     const result = generator.next();
+    accumulatedTime += (performance.now() - t0);
     
     if (result.done) {
       // Completed naturally (or no path found)
@@ -29,19 +31,18 @@ self.onmessage = (e) => {
           algorithm: algorithmName, 
           value: result.value || { visitedNodes: [], path: [], finished: true }, 
           done: true,
-          timeTaken: performance.now() - startTime
+          timeTaken: accumulatedTime
         } 
       });
       generator = null;
     } else {
-      const timeTaken = performance.now() - startTime;
       self.postMessage({ 
         type: 'STEP', 
         payload: { 
           algorithm: algorithmName, 
           value: result.value, 
           done: result.value.finished,
-          timeTaken
+          timeTaken: accumulatedTime
         } 
       });
       

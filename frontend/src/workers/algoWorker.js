@@ -2,7 +2,7 @@ import { algorithmsMap } from '../algorithms/sorting';
 
 let generator = null;
 let algorithmName = '';
-let startTime = 0;
+let accumulatedTime = 0;
 
 self.onmessage = (e) => {
   const { type, payload } = e.data;
@@ -20,13 +20,15 @@ self.onmessage = (e) => {
     } else {
       generator = algorithmsMap[algorithmName].generator(payload.array);
     }
-    startTime = performance.now();
+    accumulatedTime = 0;
     self.postMessage({ type: 'INIT_DONE' });
   } 
   else if (type === 'TICK') {
     if (!generator) return;
+    const t0 = performance.now();
     const { value, done } = generator.next();
-    const timeTaken = (performance.now() - startTime).toFixed(2);
+    accumulatedTime += (performance.now() - t0);
+    const timeTaken = accumulatedTime.toFixed(3);
     
     self.postMessage({
       type: 'STEP',
